@@ -20,6 +20,7 @@ use Laravel\Lumen\Auth\Authorizable;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Post[] $posts
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Token[] $tokens
  */
 class User extends Model implements AuthenticatableContract, AuthorizableContract
 {
@@ -46,5 +47,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    public function tokens()
+    {
+        return $this->hasMany(Token::class);
     }
 }

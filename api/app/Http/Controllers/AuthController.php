@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Token;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -29,10 +30,12 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $user->api_token = Str::random(80);
-        $user->save();
+        $token = Token::create([
+            'user_id' => $user->id,
+            'token' => Str::random(60),
+        ]);
 
-        return response()->json($user);
+        return response()->json(['user' => $user, 'token' => $token->token]);
     }
 
     public function user(Request $request)

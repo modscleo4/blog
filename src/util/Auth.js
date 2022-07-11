@@ -3,6 +3,15 @@ import { store } from "../store.js";
 import { API_URL } from "./API.js";
 
 export default class Auth {
+    static handleLogin(user, token, remember = false) {
+        store.commit('login', user);
+        store.commit('token', token);
+
+        if (remember) {
+            localStorage.setItem('token', token);
+        }
+    }
+
     static async login(email, password, remember = false) {
         const response = await fetch(`${API_URL}/login`, {
             method: 'POST',
@@ -13,13 +22,8 @@ export default class Auth {
         });
 
         if (response.status === 200) {
-            const user = await response.json();
-            store.commit('login', user);
-            store.commit('token', user.api_token);
-
-            if (remember) {
-                localStorage.setItem('token', user.api_token);
-            }
+            const {user, token} = await response.json();
+            Auth.handleLogin(user, token, remember);
             return user;
         }
 
@@ -29,7 +33,7 @@ export default class Auth {
     static async check() {
         const response = await fetch(`${API_URL}/user`, {
             headers: {
-                'X-Auth-Token': store.state.token ?? '',
+                'Authorization': 'Bearer ' + (store.state.token ?? ''),
             }
         });
 

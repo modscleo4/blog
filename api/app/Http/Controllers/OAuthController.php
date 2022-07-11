@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Token;
 use App\Models\User;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
@@ -66,9 +67,11 @@ class OAuthController extends Controller
             ]);
         }
 
-        $user->api_token = Str::random(80);
-        $user->save();
+        $token = Token::create([
+            'user_id' => $user->id,
+            'token' => Str::random(60),
+        ]);
 
-        return response()->json($user);
+        return response()->json(['user' => $user, 'token' => $token->token]);
     }
 }

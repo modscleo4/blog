@@ -28,7 +28,7 @@ export default class Post {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Auth-Token': store.state.token ?? '',
+                'Authorization': 'Bearer ' + (store.state.token ?? ''),
             },
             body: JSON.stringify(post)
         });
@@ -57,7 +57,7 @@ export default class Post {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Auth-Token': store.state.token ?? '',
+                'Authorization': 'Bearer ' + (store.state.token ?? ''),
             },
             body: JSON.stringify(post)
         });
@@ -75,7 +75,7 @@ export default class Post {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Auth-Token': store.state.token ?? '',
+                'Authorization': 'Bearer ' + (store.state.token ?? ''),
             },
         });
 

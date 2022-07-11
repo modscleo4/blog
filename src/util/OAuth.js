@@ -1,6 +1,7 @@
 import { store } from "../store.js";
 
 import { API_URL } from "./API.js";
+import Auth from "./Auth.js";
 
 export default class OAuth {
     static async getAuthURL() {
@@ -37,10 +38,8 @@ export default class OAuth {
         });
 
         if (response.status === 200) {
-            const user = await response.json();
-            store.commit('login', user);
-            store.commit('token', user.api_token);
-            localStorage.setItem('token', user.api_token);
+            const {user, token} = await response.json();
+            Auth.handleLogin(user, token, true);
             return user;
         }
 
