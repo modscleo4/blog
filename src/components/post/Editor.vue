@@ -1,6 +1,6 @@
 <script setup>
-import {ref, computed, watch} from 'vue';
-import {marked} from 'marked';
+import { ref, computed, watch } from 'vue';
+import { marked } from 'marked';
 
 const props = defineProps({
     input: {

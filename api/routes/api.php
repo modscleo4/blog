@@ -17,6 +17,11 @@ $router->group(['prefix' => '/api/v1'], function () use ($router) {
     $router->get('/user', 'AuthController@user');
     $router->post('/login', 'AuthController@login');
 
+    $router->group(['prefix' => '/oauth'], function () use ($router) {
+        $router->post('/login', 'OAuthController@getAuthURL');
+        $router->post('/callback', 'OAuthController@authCallback');
+    });
+
     $router->group(['prefix' => '/post'], function () use ($router) {
         $router->get('/', [
             'as' => 'api.post.index',

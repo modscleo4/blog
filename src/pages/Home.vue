@@ -1,11 +1,20 @@
 <script setup>
+import {defineProps, ref} from 'vue';
+
 import ListPost from '../components/ListPost.vue';
+
+const props = defineProps({
+    id: {
+        type: String,
+        default: null,
+    },
+});
 </script>
 
 <template>
     <div id="content">
         <Suspense>
-            <ListPost />
+            <ListPost :postId="parseInt(id)" />
 
             <template #fallback>
                 <div>Carregando...</div>

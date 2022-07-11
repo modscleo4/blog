@@ -43,7 +43,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'password',
     ];
 
-    protected function posts()
+    public function posts()
     {
         return $this->hasMany(Post::class);
     }

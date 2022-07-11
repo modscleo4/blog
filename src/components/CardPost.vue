@@ -1,20 +1,34 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+
 import Post from '../util/Post.js';
 import PostModal from './PostModal.vue';
 
-defineProps({
+const props = defineProps({
     post: {
         type: Post,
         required: true
-    }
+    },
+    open: {
+        type: Boolean,
+        default: false
+    },
 });
 
+const router = useRouter();
+
 const modalRefs = ref({ show: false });
+
+onMounted(() => {
+    if (props.open) {
+        modalRefs.value.show = true;
+    }
+});
 </script>
 
 <template>
-    <div @click="modalRefs.show = true">
+    <div @click="modalRefs.show = true; router.push(`/posts/${post.user.username}/${post.id}/${post.title.toLowerCase().replace(/[ \.]+/g, '-')}`)">
         <div id="card-container">
             <img id="thumbnail" :src="post.image" alt="">
             <div id="card-content">

@@ -13,7 +13,6 @@ export const store = createStore({
 
         token(state, token) {
             state.token = token;
-            localStorage.setItem('token', token);
         },
 
         updatePosts(state, posts) {

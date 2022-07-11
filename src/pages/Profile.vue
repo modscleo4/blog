@@ -1,5 +1,6 @@
 <script setup>
 import { defineProps, ref } from 'vue';
+
 import ListPost from '../components/ListPost.vue';
 
 const props = defineProps({
@@ -13,6 +14,8 @@ const props = defineProps({
 <template>
     <div id="content">
         <Suspense>
+            <ListPost :username="username" />
+
             <template #fallback>
                 <div>Carregando...</div>
             </template>

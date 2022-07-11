@@ -2,13 +2,14 @@ import { store } from "../store.js";
 import { API_URL } from './API.js';
 
 export default class Post {
-    constructor({id = 0, user_id = null, title = '', resume = '', body = '', image = '#' }) {
+    constructor({id = 0, user_id = null, title = '', resume = '', body = '', image = '#', user = { username: '' } }) {
         this.id = id;
         this.user_id = user_id;
         this.title = title;
         this.resume = resume;
         this.body = body;
         this.image = image;
+        this.user = user;
     }
 
     static async getAll() {

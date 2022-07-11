@@ -1,12 +1,15 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
 import Post from '../util/Post.js';
 import ModalPage from './ModalPage.vue';
 import PostView from './PostView.vue';
 
 const store = useStore();
+
+const router = useRouter();
 
 const user = computed(() => store.state.user);
 
@@ -28,8 +31,16 @@ async function deletePost() {
     }
 }
 
+function openPost() {
+    //history.pushState(null, '', `/post/${props.post.id}`);
+}
+
 function closePost() {
     show.value = false;
+}
+
+function closePostAndBack() {
+    router.back();
 }
 
 defineExpose({
@@ -38,11 +49,11 @@ defineExpose({
 </script>
 
 <template>
-    <ModalPage :show="show" @close="closePost()">
+    <ModalPage :show="show" @show="openPost()" @close="closePost()" @closeAndBack="closePostAndBack()">
         <template #header>
             <ul>
                 <li>
-                    <button class="btn btn-sm btn-outline-info modal-default-button" @click="closePost()">X Fechar</button>
+                    <button class="btn btn-sm btn-outline-info modal-default-button" @click="closePost(); closePostAndBack()">X Fechar</button>
                 </li>
                 <li v-if="user">
                     <router-link :to="`/posts/${post.id}/edit`"><button class="btn btn-sm btn-outline-primary modal-default-button" @click="closePost()">Editar</button></router-link>

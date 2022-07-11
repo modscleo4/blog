@@ -6,7 +6,11 @@ import Post from '../util/Post.js';
 import CardPost from './CardPost.vue';
 
 const props = defineProps({
-    user: {
+    username: {
+        type: String,
+        default: null,
+    },
+    postId: {
         type: Number,
         default: null,
     },
@@ -26,7 +30,7 @@ const posts = computed(() => store.state.posts);
 
 <template>
     <div v-if="posts && posts.length > 0" id="list-container">
-        <CardPost v-for="post in user ? posts.filter(post => post.user_id === user) : posts" :key="post.id" :post="post" />
+        <CardPost v-for="post in username ? posts.filter(post => post.user.username === username) : posts" :key="post.id" :post="post" :open="post.id === postId" />
     </div>
     <div v-else>
         <p>Nenhum post encontrado :(</p>

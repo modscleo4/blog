@@ -3,7 +3,7 @@ import { store } from "../store.js";
 import { API_URL } from "./API.js";
 
 export default class Auth {
-    static async login(email, password) {
+    static async login(email, password, remember = false) {
         const response = await fetch(`${API_URL}/login`, {
             method: 'POST',
             headers: {
@@ -16,6 +16,10 @@ export default class Auth {
             const user = await response.json();
             store.commit('login', user);
             store.commit('token', user.api_token);
+
+            if (remember) {
+                localStorage.setItem('token', user.api_token);
+            }
             return user;
         }
 
@@ -40,5 +44,6 @@ export default class Auth {
     static async logout() {
         store.commit('login', null);
         store.commit('token', null);
+        localStorage.removeItem('token');
     }
 }

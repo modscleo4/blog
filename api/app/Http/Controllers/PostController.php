@@ -17,11 +17,16 @@ class PostController extends Controller
         //
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::orderBy('id')->get();
+        $username = $request->input('username');
 
-        return response()->json($posts, 200);
+        $posts = Post::with('user:id,username')->orderBy('id');
+        if ($username) {
+            $posts = $posts->where('user.username', $username);
+        }
+
+        return response()->json($posts->get(), 200);
     }
 
     public function create(Request $request)
