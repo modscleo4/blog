@@ -1,6 +1,6 @@
-<script setup>
-import { defineProps, ref } from 'vue';
-import { useStore } from 'vuex';
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useAuthStore } from './store';
 import { RouterView } from 'vue-router';
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
@@ -8,14 +8,10 @@ import { RouterView } from 'vue-router';
 import Header from './components/Header.vue';
 import Auth from './util/Auth.js';
 
-const store = useStore();
+const authStore = useAuthStore();
 
-Auth.check().then(user => {
-    if (user) {
-        store.commit('login', user);
-    }
-}).catch(e => {
-    //
+Auth.check().catch(() => {
+    authStore.logout();
 });
 </script>
 

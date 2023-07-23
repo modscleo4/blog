@@ -1,9 +1,9 @@
-<script setup>
+<script setup lang="ts">
 import { ref, watch } from 'vue';
 
-const props = defineProps({
-    show: Boolean
-});
+const props = defineProps<{
+    show: boolean;
+}>();
 
 const emits = defineEmits([
     'show',

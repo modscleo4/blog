@@ -1,5 +1,5 @@
-<script setup>
-import { defineProps, ref } from 'vue';
+<script setup lang="ts">
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import OAuth from '../util/OAuth.js';
@@ -10,7 +10,7 @@ const params = new URL(location.href).searchParams;
 
 async function getUser() {
     try {
-        const user = await OAuth.getUserInfo(params.get('code'), params.get('session_state'));
+        const user = await OAuth.getUserInfo(params.get('code')!, params.get('state')!, params.get('session_state')!);
     } catch (e) {
         alert(e);
     }
@@ -22,9 +22,8 @@ getUser();
 </script>
 
 <template>
-<p style="justify-self: center;">Redirecionando. Aguarde...</p>
+    <p style="justify-self: center;">Redirecionando. Aguarde...</p>
 </template>
 
 <style scoped>
-
 </style>

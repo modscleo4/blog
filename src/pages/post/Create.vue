@@ -1,7 +1,7 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue';
 
-import FormPost from '../../components/post/FormPost.vue';
+import FormPost from '../../components/post/Form.vue';
 
 const post = ref({});
 </script>
@@ -17,5 +17,4 @@ const post = ref({});
 </template>
 
 <style scoped>
-
 </style>

@@ -1,14 +1,11 @@
-<script setup>
-import { defineProps, ref } from 'vue';
+<script setup lang="ts">
+import { ref } from 'vue';
 
-import ListPost from '../components/ListPost.vue';
+import ListPost from '../components/post/List.vue';
 
-const props = defineProps({
-    username: {
-        type: String,
-        default: null,
-    },
-});
+const props = defineProps<{
+    username?: string;
+}>();
 </script>
 
 <template>

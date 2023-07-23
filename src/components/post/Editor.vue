@@ -1,65 +1,111 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { marked } from 'marked';
+import EditorJS, { OutputData } from '@editorjs/editorjs';
 
-const props = defineProps({
-    input: {
-        type: String,
-        default: '',
-    },
-    inputId: {
-        type: String,
-        required: true,
-    },
-    required: {
-        type: Boolean,
-        default: false,
-    },
-});
+import EditorJSHeader from '@editorjs/header';
+import EditorJSList from '@editorjs/list';
+import EditorJSParagraph from '@editorjs/paragraph';
+import EditorJSCode from '@editorjs/code';
+import EditorJSQuote from '@editorjs/quote';
+import EditorJSWarning from '@editorjs/warning';
+import EditorJSDelimiter from '@editorjs/delimiter';
+import EditorJSChecklist from '@editorjs/checklist';
+import EditorJSImage from '@editorjs/image';
+import EditorJSLink from '@editorjs/link';
+import EditorJSTable from '@editorjs/table';
+import EditorJSMarker from '@editorjs/marker';
+import EditorJSInlineCode from '@editorjs/inline-code';
+import EditorJSUnderline from '@editorjs/underline';
+
+import { PostContent } from '../../util/Post';
+
+const props = defineProps<{
+    input?: PostContent;
+    required: boolean;
+}>();
 
 const input = ref(props.input);
-const output = computed(() => marked(input.value));
+// const output = computed(() => marked(input.value));
 
 defineExpose({
     input
 });
+
+const editor = new EditorJS({
+    holder: 'editor',
+    tools: {
+        header: {
+            class: EditorJSHeader,
+            inlineToolbar: ['link'],
+        },
+        list: {
+            class: EditorJSList,
+            inlineToolbar: true,
+        },
+        code: {
+            class: EditorJSCode,
+        },
+        paragraph: {
+            class: EditorJSParagraph,
+            inlineToolbar: true,
+        },
+        quote: {
+            class: EditorJSQuote,
+            inlineToolbar: true,
+        },
+        warning: {
+            class: EditorJSWarning,
+        },
+        delimiter: {
+            class: EditorJSDelimiter,
+        },
+        checklist: {
+            class: EditorJSChecklist,
+        },
+        /*image: {
+            class: EditorJSImage,
+            config: {
+                endpoints: {
+                    byFile: 'http://localhost:3000/api/upload',
+                    byUrl: 'http://localhost:3000/api/upload',
+                },
+            },
+        },*/
+        /*link: {
+            class: EditorJSLink,
+            config: {
+                endpoint: 'http://localhost:3000/api/upload',
+            },
+        },*/
+        table: {
+            class: EditorJSTable,
+        },
+        marker: {
+            class: EditorJSMarker,
+        },
+        inlineCode: {
+            class: EditorJSInlineCode,
+            inlineToolbar: true,
+        },
+        underline: {
+            class: EditorJSUnderline,
+            inlineToolbar: true,
+        },
+    },
+    data: props.input as OutputData
+});
 </script>
 
 <template>
-    <div class="editor">
-        <textarea :id="inputId" class="input form-control" :required="required" v-model="input" autofocus></textarea>
-        <span class="separator"></span>
-        <div class="output" v-html="output"></div>
+    <div id="editor">
+
     </div>
 </template>
 
 <style scoped>
-
-.editor {
-    display: grid;
-    grid-template-columns: 1fr min-content 1fr;
-    gap: 8px;
-    padding: 0;
-}
-
-.input,
-.output {
-    overflow: auto;
-    box-sizing: border-box;
-    min-height: 400px;
-    max-height: 400px;
-}
-
-.input {
-    border: none;
-    resize: none;
-    outline: none;
-    font-size: 14px;
-    font-family: 'Monaco', courier, monospace;
-    padding: 20px;
-}
-
-.separator {
-    border-right: 1px solid #ccc;
+#editor {
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
 }
 </style>

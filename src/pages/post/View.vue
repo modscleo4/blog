@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import FormPost from '../../components/post/Form.vue';
+import PostRender from '../../components/post/Render.vue';
+import Post from '../../util/Post';
 
 const props = defineProps<{
     id: string;
 }>();
-
-const post = ref({});
 </script>
 
 <template>
     <Suspense>
-        <FormPost :postId="props.id" ref="post" />
+        <PostRender :postId="props.id" />
 
         <template #fallback>
             <div>Carregando...</div>

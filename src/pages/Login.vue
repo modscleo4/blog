@@ -1,12 +1,10 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue';
-import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 
 import Auth from '../util/Auth.js';
 import OAuth from '../util/OAuth.js';
 
-const store = useStore();
 const router = useRouter();
 
 const email = ref('');

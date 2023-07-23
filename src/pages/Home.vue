@@ -1,20 +1,13 @@
-<script setup>
-import {defineProps, ref} from 'vue';
+<script setup lang="ts">
+import { ref } from 'vue';
 
-import ListPost from '../components/ListPost.vue';
-
-const props = defineProps({
-    id: {
-        type: String,
-        default: null,
-    },
-});
+import ListPost from '../components/post/List.vue';
 </script>
 
 <template>
     <div id="content">
         <Suspense>
-            <ListPost :postId="parseInt(id)" />
+            <ListPost />
 
             <template #fallback>
                 <div>Carregando...</div>

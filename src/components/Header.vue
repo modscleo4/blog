@@ -1,13 +1,13 @@
-<script setup>
-import {computed} from '@vue/reactivity';
+<script setup lang="ts">
+import { computed } from '@vue/reactivity';
 import { RouterLink, useRouter } from 'vue-router';
-import { useStore } from 'vuex';
+import { useAuthStore } from '../store';
 import Auth from '../util/Auth.js';
 
-const store = useStore();
-const router  = useRouter();
+const authStore = useAuthStore();
+const router = useRouter();
 
-const user = computed(() => store.state.user);
+const user = computed(() => authStore.user);
 
 async function logout() {
     await Auth.logout();
@@ -18,20 +18,29 @@ async function logout() {
 <template>
     <header class="navbar">
         <ul>
-            <li><router-link to="/">Home</router-link></li>
-            <li v-if="user"><router-link to="/posts/create">Criar Post</router-link></li>
+            <li>
+                <router-link to="/">Home</router-link>
+            </li>
+            <li v-if="user">
+                <router-link to="/posts/create">Criar Post</router-link>
+            </li>
         </ul>
 
         <ul v-if="!user">
-            <li ><router-link to="/login">Login</router-link></li>
+            <li>
+                <router-link to="/login">Login</router-link>
+            </li>
         </ul>
 
         <div class="dropdown" v-else>
-            <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenuUser" data-bs-toggle="dropdown" aria-expanded="false">
+            <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenuUser"
+                    data-bs-toggle="dropdown" aria-expanded="false">
                 <span class="name">{{ user.name }}</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuUser">
-                <li><router-link class="dropdown-item" :to="`/${user.username}`">Perfil</router-link></li>
+                <li>
+                    <router-link class="dropdown-item" :to="`/${user.username}`">Perfil</router-link>
+                </li>
                 <li><a href="#" class="dropdown-item" @click="logout()">Sair</a></li>
             </ul>
         </div>
@@ -49,14 +58,14 @@ header {
     top: 0;
 }
 
-header > ul {
+header>ul {
     display: flex;
     gap: 16px;
     padding: 0;
     margin: 0;
 }
 
-header > ul > li {
+header>ul>li {
     list-style: none;
 }
 </style>
