@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "pwa-node",
+            "type": "node",
             "request": "launch",
             "name": "NPM: Dev",
             "skipFiles": [
@@ -21,7 +21,7 @@
             "type": "firefox",
             "request": "launch",
             "name": "Vue: firefox",
-            "url": "http://localhost:3000",
+            "url": "http://localhost:5173",
             "webRoot": "${workspaceFolder}/src"
         }
     ]

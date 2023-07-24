@@ -21,7 +21,7 @@ const router = createRouter({
         { path: '/', component: Home },
         { path: '/login', component: Login },
         { path: '/posts/create', component: CreatePost },
-        { path: '/posts/:username/:id/:title', component: ViewPost, props: true },
+        { path: '/posts/:title/:id', component: ViewPost, props: true },
         { path: '/posts/:id/edit', component: EditPost, props: true },
         { path: '/:username', component: Profile, props: true },
     ],

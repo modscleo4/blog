@@ -68,8 +68,8 @@ async function deletePost() {
     text-align: center;
 }
 
-#md {
-    text-align: justify;
-    padding: 0 8px;
+#body {
+    display: flex;
+    justify-content: center;
 }
 </style>

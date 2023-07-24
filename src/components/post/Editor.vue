@@ -71,12 +71,6 @@ const editor = new EditorJS({
                 },
             },
         },*/
-        /*link: {
-            class: EditorJSLink,
-            config: {
-                endpoint: 'http://localhost:3000/api/upload',
-            },
-        },*/
         table: {
             class: EditorJSTable,
         },
@@ -92,7 +86,12 @@ const editor = new EditorJS({
             inlineToolbar: true,
         },
     },
-    data: props.input as OutputData
+    data: props.input as OutputData,
+    onChange: () => {
+        editor.save().then((output) => {
+            input.value = output as PostContent;
+        });
+    },
 });
 </script>
 

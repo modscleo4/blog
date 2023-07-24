@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-// import { VueShowdown } from 'vue-showdown';
 
 import PostContent from './Content.vue';
 import Post from '../../util/Post.js';
@@ -16,14 +15,15 @@ const props = defineProps<{
         <h1 id="title">{{ post.title }}</h1>
         <h4 id="resume">{{ post.resume }}</h4>
         <PostContent :content="post.content" />
-        <!-- <VueShowdown id="md" :markdown="post.content" /> -->
     </div>
 </template>
 
 <style scoped>
 #post-container {
-    display: grid;
-    grid-template-rows: auto auto;
+    width: 90vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     overflow: auto;
     padding: 16px 48px;
 }
@@ -33,19 +33,16 @@ const props = defineProps<{
     aspect-ratio: 16 / 9;
     object-fit: cover;
     justify-self: center;
+    margin: auto;
 }
 
 #title {
     text-align: center;
+    font-size: 3.5em;
 }
 
 #resume {
     text-align: justify;
-    padding: 0 8px;
-}
-
-#md {
-    text-align: justify;
-    padding: 0 8px;
+    font-size: 1.75em;
 }
 </style>

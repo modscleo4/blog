@@ -12,8 +12,7 @@ const router = useRouter();
 </script>
 
 <template>
-    <div
-         @click="router.push(`/posts/${post.user.username}/${post.id}/${post.title.toLowerCase().replace(/[ \.]+/g, '-')}`)">
+    <div @click="router.push(`/posts/${post.title.toLowerCase().replace(/[ \.]+/g, '-')}/${post.id}`)">
         <div id="card-container">
             <img id="thumbnail" :src="post.imageUrl" alt="">
             <div id="card-content">
