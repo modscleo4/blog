@@ -20,6 +20,10 @@ const post = await Post.get(props.postId);
 const user = computed(() => authStore.user);
 
 async function deletePost() {
+    if (!confirm(('Tem certeza que deseja excluir este post?'))) {
+        return;
+    }
+
     try {
         await Post.delete(post.id);
         postsStore.deletePost(post.id);
@@ -50,11 +54,17 @@ async function deletePost() {
 </template>
 
 <style scoped>
+#header {
+    padding: 1.25em;
+}
+
 #header ul {
     display: flex;
     flex-direction: row;
     list-style: none;
     gap: 8px;
+    padding: 0;
+    margin: 0;
 }
 
 #thumbnail {

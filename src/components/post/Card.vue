@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import Post from '../../util/Post.js';
+import { dateToRelative, dateFormatted } from '../../util/date.js';
 
 const props = defineProps<{
     post: Post,
@@ -20,6 +21,11 @@ const router = useRouter();
 
                 <p id="resume">{{ post.resume }}</p>
             </div>
+
+            <footer>
+                <span>{{ post.user.username }}</span>
+                <span :title="dateFormatted(post.createdAt)">{{ dateToRelative(post.createdAt) }}</span>
+            </footer>
         </div>
     </div>
 </template>
@@ -59,5 +65,21 @@ const router = useRouter();
 #resume {
     font-size: 16px;
     text-align: justify;
+}
+
+footer {
+    display: flex;
+    gap: 0.5em;
+    padding: 0.5em;
+}
+
+footer span {
+    padding: 4px;
+    border-radius: 4px;
+    background-color: #eee;
+}
+
+footer span:hover {
+    background-color: #ddd;
 }
 </style>

@@ -52,7 +52,7 @@ export default class Auth {
 
         if (response.status === 201) {
             const { access_token, refresh_token } = await response.json();
-            Auth.handleLogin(access_token, refresh_token);
+            Auth.handleLogin(access_token, refresh_token, authStore.remember);
             return true;
         } else {
             authStore.logout();

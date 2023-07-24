@@ -106,5 +106,6 @@ const editor = new EditorJS({
     background-color: #fff;
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
+    padding: 0 3rem;
 }
 </style>

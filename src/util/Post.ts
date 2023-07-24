@@ -61,6 +61,18 @@ export type PostContent = {
     version?: string,
 };
 
+type BackendPost = {
+    id: string,
+    userId: string | null,
+    title: string,
+    resume: string,
+    content: PostContent,
+    imageUrl: string,
+    user: { username: string; },
+    createdAt: string;
+    updatedAt: string;
+};
+
 export default class Post {
     public id: string;
     public userId: string | null;
@@ -69,8 +81,10 @@ export default class Post {
     public content: PostContent;
     public imageUrl: string;
     public user: { username: string; };
+    public createdAt: Date;
+    public updatedAt?: Date;
 
-    constructor({ id = '', userId = null, title = '', resume = '', content = { }, imageUrl = '#', user = { username: '' } }: { id: string, userId: string | null, title: string, resume: string, content: PostContent, imageUrl: string, user: { username: string; }; }) {
+    constructor({ id = '', userId = null, title = '', resume = '', content = {}, imageUrl = '#', user = { username: '' }, createdAt = '', updatedAt = '' }: BackendPost) {
         this.id = id;
         this.userId = userId;
         this.title = title;
@@ -78,20 +92,22 @@ export default class Post {
         this.content = content;
         this.imageUrl = imageUrl;
         this.user = user;
+        this.createdAt = new Date(createdAt);
+        this.updatedAt = updatedAt ? new Date(updatedAt) : undefined;
     }
 
     static async getAll() {
         const response = await fetch(`${API_URL}/api/v1/post/`);
 
         if (response.status === 200) {
-            const posts: Post[] = await response.json();
+            const posts: BackendPost[] = await response.json();
             return posts.map(post => new Post(post));
         }
 
         throw new Error('Posts not found');
     }
 
-    static async create({ title, resume, content, imageUrl }: { title: string, resume: string, content: object, imageUrl: string }): Promise<Post> {
+    static async create({ title, resume, content, imageUrl }: { title: string, resume: string, content: object, imageUrl: string; }): Promise<Post> {
         const authStore = useAuthStore();
 
         const response = await fetch(`${API_URL}/api/v1/post/`, {
@@ -129,14 +145,14 @@ export default class Post {
         const response = await fetch(`${API_URL}/api/v1/post/${id}`);
 
         if (response.status === 200) {
-            const post = await response.json();
+            const post: BackendPost = await response.json();
             return new Post(post);
         }
 
         throw new Error('Post not found');
     }
 
-    static async update(id: string, { title, resume, content, imageUrl }: { title: string, resume: string, content: object, imageUrl: string }): Promise<Post> {
+    static async update(id: string, { title, resume, content, imageUrl }: { title: string, resume: string, content: object, imageUrl: string; }): Promise<Post> {
         const authStore = useAuthStore();
 
         const response = await fetch(`${API_URL}/api/v1/post/${id}`, {

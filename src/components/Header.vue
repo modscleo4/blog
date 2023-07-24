@@ -49,23 +49,24 @@ async function logout() {
 
 <style scoped>
 header {
-    width: 100vw;
     display: grid;
     grid-template-columns: auto auto;
     justify-content: space-between;
-    padding: 12px 24px;
+    padding: 0.5em 1.25em;
     position: sticky;
     top: 0;
+    background: #f7f7f7;
+    border-bottom: 1px solid #ddd;
 }
 
-header>ul {
+header > ul {
     display: flex;
     gap: 16px;
     padding: 0;
     margin: 0;
 }
 
-header>ul>li {
+header > ul > li {
     list-style: none;
 }
 </style>

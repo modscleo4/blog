@@ -42,7 +42,6 @@ body.modal-open {
 #app {
     display: grid;
     grid-template-rows: min-content auto;
-    justify-content: center;
     min-height: 100vh;
 }
 </style>

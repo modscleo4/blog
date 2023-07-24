@@ -3,6 +3,7 @@ import { ref } from 'vue';
 
 import PostContent from './Content.vue';
 import Post from '../../util/Post.js';
+import { dateToRelative, dateFormatted } from '../../util/date.js';
 
 const props = defineProps<{
     post: Post;
@@ -10,39 +11,69 @@ const props = defineProps<{
 </script>
 
 <template>
-    <div id="post-container">
-        <img id="thumbnail" :src="post.imageUrl" alt="">
+    <article>
         <h1 id="title">{{ post.title }}</h1>
-        <h4 id="resume">{{ post.resume }}</h4>
+        <p id="resume">{{ post.resume }}</p>
+        <img id="thumbnail" :src="post.imageUrl" alt="">
+        <section id="author">
+            <span>{{ post.user.username }}</span>
+            <span :title="dateFormatted(post.createdAt)">{{ dateToRelative(post.createdAt) }}</span>
+            <span v-if="post.updatedAt" :title="dateFormatted(post.updatedAt)">atualizado {{ dateToRelative(post.updatedAt) }}</span>
+        </section>
         <PostContent :content="post.content" />
-    </div>
+    </article>
 </template>
 
 <style scoped>
-#post-container {
-    width: 90vw;
+article {
+    min-width: 500px;
+    max-width: 1200px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    align-items: center;
     overflow: auto;
-    padding: 16px 48px;
+    gap: 1rem;
+}
+
+#title {
+    text-align: center;
+    font-size: 3.5em;
+    padding: 0 3rem;
+}
+
+#resume {
+    text-align: center;
+    font-size: 1.25em;
+    padding: 0 3rem;
 }
 
 #thumbnail {
-    width: 90%;
+    width: 100%;
     aspect-ratio: 16 / 9;
     object-fit: cover;
     justify-self: center;
     margin: auto;
 }
 
-#title {
-    text-align: center;
-    font-size: 3.5em;
+section#author {
+    display: flex;
+    gap: 0.5em;
+    align-self: flex-start;
 }
 
-#resume {
-    text-align: justify;
-    font-size: 1.75em;
+section#author span {
+    padding: 4px;
+    border-radius: 4px;
+    background-color: #eee;
+}
+
+section#author span:hover {
+    background-color: #ddd;
+}
+
+#content {
+    padding: 0 3rem;
+    width: 100%;
+    max-width: 100vw;
 }
 </style>
