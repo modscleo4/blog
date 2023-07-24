@@ -45,7 +45,7 @@ export default class Post {
     }
 
     static async getAll() {
-        const response = await fetch(`${API_URL}/post/`);
+        const response = await fetch(`${API_URL}/api/v1/post/`);
 
         if (response.status === 200) {
             const posts: Post[] = await response.json();
@@ -58,7 +58,7 @@ export default class Post {
     static async create({ title, resume, content, imageUrl }: { title: string, resume: string, content: object, imageUrl: string }): Promise<Post> {
         const authStore = useAuthStore();
 
-        const response = await fetch(`${API_URL}/post/`, {
+        const response = await fetch(`${API_URL}/api/v1/post/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ export default class Post {
             }
         }
 
-        const response = await fetch(`${API_URL}/post/${id}`);
+        const response = await fetch(`${API_URL}/api/v1/post/${id}`);
 
         if (response.status === 200) {
             const post = await response.json();
@@ -103,7 +103,7 @@ export default class Post {
     static async update(id: string, { title, resume, content, imageUrl }: { title: string, resume: string, content: object, imageUrl: string }): Promise<Post> {
         const authStore = useAuthStore();
 
-        const response = await fetch(`${API_URL}/post/${id}`, {
+        const response = await fetch(`${API_URL}/api/v1/post/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -128,7 +128,7 @@ export default class Post {
     static async delete(id: string) {
         const authStore = useAuthStore();
 
-        const response = await fetch(`${API_URL}/post/${id}`, {
+        const response = await fetch(`${API_URL}/api/v1/post/${id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${authStore.access_token}`,
