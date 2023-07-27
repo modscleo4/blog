@@ -1,5 +1,6 @@
 import { useAuthStore, usePostsStore } from "../store.js";
 import { API_URL } from './API.js';
+import Auth from "./Auth.js";
 
 type PostContentBlock = {
     type: 'paragraph',
@@ -15,6 +16,7 @@ type PostContentBlock = {
 } | {
     type: 'code',
     data: {
+        language?: string,
         code: string,
     },
 } | {
@@ -69,6 +71,7 @@ type BackendPost = {
     content: PostContent,
     imageUrl: string,
     user: { username: string; },
+    votes?: { [key: string]: number },
     createdAt: string;
     updatedAt: string;
 };
@@ -81,10 +84,11 @@ export default class Post {
     public content: PostContent;
     public imageUrl: string;
     public user: { username: string; };
+    public votes: { [key: string]: number };
     public createdAt: Date;
     public updatedAt?: Date;
 
-    constructor({ id = '', userId = null, title = '', resume = '', content = {}, imageUrl = '#', user = { username: '' }, createdAt = '', updatedAt = '' }: BackendPost) {
+    constructor({ id = '', userId = null, title = '', resume = '', content = {}, imageUrl = '#', user = { username: '' }, votes = {}, createdAt = '', updatedAt = '' }: BackendPost) {
         this.id = id;
         this.userId = userId;
         this.title = title;
@@ -92,12 +96,14 @@ export default class Post {
         this.content = content;
         this.imageUrl = imageUrl;
         this.user = user;
+        this.votes = votes;
         this.createdAt = new Date(createdAt);
         this.updatedAt = updatedAt ? new Date(updatedAt) : undefined;
     }
 
-    static async getAll() {
-        const response = await fetch(`${API_URL}/api/v1/post/`);
+    static async getAll(): Promise<Post[]> {
+        const fields = ['id', 'userId', 'title', 'resume', 'imageUrl', 'createdAt', 'updatedAt', 'user'].join(',');
+        const response = await fetch(`${API_URL}/api/v1/post/?fields=${fields}`);
 
         if (response.status === 200) {
             const posts: BackendPost[] = await response.json();
@@ -132,16 +138,7 @@ export default class Post {
         throw new Error('Post not created');
     }
 
-    static async get(id: string) {
-        const postsStore = usePostsStore();
-
-        if (postsStore.posts.length > 0) {
-            const post = postsStore.posts.find(p => p.id === id);
-            if (post) {
-                return post;
-            }
-        }
-
+    static async get(id: string): Promise<Post> {
         const response = await fetch(`${API_URL}/api/v1/post/${id}`);
 
         if (response.status === 200) {
@@ -155,11 +152,13 @@ export default class Post {
     static async update(id: string, { title, resume, content, imageUrl }: { title: string, resume: string, content: object, imageUrl: string; }): Promise<Post> {
         const authStore = useAuthStore();
 
+        await Auth.check();
+
         const response = await fetch(`${API_URL}/api/v1/post/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + (authStore.access_token ?? ''),
+                'Authorization': `Bearer ${authStore.access_token}`
             },
             body: JSON.stringify({
                 title,
@@ -179,6 +178,8 @@ export default class Post {
 
     static async delete(id: string) {
         const authStore = useAuthStore();
+
+        await Auth.check();
 
         const response = await fetch(`${API_URL}/api/v1/post/${id}`, {
             method: 'DELETE',

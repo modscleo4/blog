@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 
 import PostRender from '../../components/post/Render.vue';
+import PostRenderSkeleton from '../../components/skeletons/post/Render.vue';
 import Post from '../../util/Post';
 
 const props = defineProps<{
@@ -14,7 +15,7 @@ const props = defineProps<{
         <PostRender :postId="props.id" />
 
         <template #fallback>
-            <div>Carregando...</div>
+            <PostRenderSkeleton />
         </template>
     </Suspense>
 </template>

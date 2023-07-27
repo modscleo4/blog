@@ -2,29 +2,24 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import Post from '../../util/Post.js';
-import { dateToRelative, formatDate } from '../../util/formatter.js';
-
-const props = defineProps<{
-    post: Post,
-}>();
+import Skeleton from '../../Skeleton.vue';
 
 const router = useRouter();
 </script>
 
 <template>
-    <div @click="router.push(`/posts/${post.id}/${post.title.toLowerCase().replace(/[ \.]+/g, '-')}`)">
+    <div>
         <div id="card-container">
-            <img id="thumbnail" :src="post.imageUrl" alt="" />
+            <span id="thumbnail" alt=""><Skeleton /></span>
             <div id="card-content">
-                <h1 id="title">{{ post.title }}</h1>
+                <span id="title"><Skeleton /></span>
 
-                <p id="resume">{{ post.resume }}</p>
+                <span id="resume"><Skeleton /></span>
             </div>
 
             <footer>
-                <span>{{ post.user.username }}</span>
-                <span :title="formatDate(post.createdAt)">{{ dateToRelative(post.createdAt) }}</span>
+                <span><Skeleton /></span>
+                <span><Skeleton /></span>
             </footer>
         </div>
     </div>
@@ -33,34 +28,33 @@ const router = useRouter();
 <style scoped>
 #card-container {
     display: block;
-    border-radius: 0.25rem;
+    border-radius: 4px;
     box-shadow: 1px 1px 6px 0 hsl(0deg 0% 0% / 15%);
     background-color: #fafafa;
     max-width: 320px;
     transition: box-shadow 200ms ease-in-out;
     overflow: hidden; /* Prevent <img> from cutting off border-radius */
     cursor: pointer;
-    min-height: 375px;
-}
-
-#card-container:hover {
-    box-shadow: 1px 1px 6px 0 hsl(0deg 0% 0% / 25%);
+    width: 320px;
 }
 
 #card-content {
     padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 #thumbnail {
+    display: block;
     width: 100%;
     aspect-ratio: 16 / 9;
     object-fit: cover;
 }
 
 #title {
-    font-size: 24px;
     text-align: center;
-    font-weight: 500;
+    font-size: 24px;
 }
 
 #resume {
@@ -75,12 +69,8 @@ footer {
 }
 
 footer span {
-    padding: 0.25rem;
-    border-radius: 0.25rem;
-    background-color: #eee;
-}
-
-footer span:hover {
-    background-color: #ddd;
+    padding: 4px;
+    border-radius: 4px;
+    width: 75px;
 }
 </style>

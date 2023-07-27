@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 
 import ListPost from '../components/post/List.vue';
+import ListPostSkeleton from '../components/skeletons/post/List.vue';
 </script>
 
 <template>
@@ -10,7 +11,7 @@ import ListPost from '../components/post/List.vue';
             <ListPost />
 
             <template #fallback>
-                <div>Carregando...</div>
+                <ListPostSkeleton />
             </template>
         </Suspense>
     </div>
@@ -19,7 +20,7 @@ import ListPost from '../components/post/List.vue';
 
 <style scoped>
 #content {
-    max-width: 1200px;
+    /* max-width: 1200px; */
     justify-self: center;
 }
 </style>

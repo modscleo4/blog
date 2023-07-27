@@ -24,9 +24,17 @@ const content = computed(() => {
         <s v-else-if="el.type === 'strikethrough'"><ContentParagraph :data="el.data" /></s>
         <a v-else-if="el.type === 'link'" :href="el.href"><ContentParagraph :data="el.data" /></a>
         <code v-else-if="el.type === 'code'" class="inline-code"><ContentParagraph :data="el.data" /></code>
-        <mark v-else-if="el.type === 'mark'" class="inline-mark"><ContentParagraph :data="el.data" /></mark>
+        <mark v-else-if="el.type === 'mark'"><ContentParagraph :data="el.data" /></mark>
     </template>
 </template>
 
 <style scoped>
+code.inline-code {
+    background: #ccc;
+    padding: 2px;
+    border-radius: 4px;
+    font-weight: normal;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.9em;
+}
 </style>

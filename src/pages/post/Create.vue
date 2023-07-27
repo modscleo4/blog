@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 
 import FormPost from '../../components/post/Form.vue';
+import FormPostSkeleton from '../../components/skeletons/post/Form.vue';
 
 const post = ref({});
 </script>
@@ -11,7 +12,7 @@ const post = ref({});
         <FormPost ref="post" />
 
         <template #fallback>
-            <div>Carregando...</div>
+            <FormPostSkeleton />
         </template>
     </Suspense>
 </template>

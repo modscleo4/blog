@@ -22,7 +22,7 @@ const filteredPosts = computed(() => props.username ? posts.value.filter(post =>
 
 <template>
     <header>
-        <h1 v-if="username">{{ filteredPosts.length }} posts from {{ username }}</h1>
+        <h1 v-if="username">{{ filteredPosts.length }} posts de {{ username }}</h1>
     </header>
 
     <div v-if="posts && posts.length > 0" id="list-container">

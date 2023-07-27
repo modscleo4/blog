@@ -15,6 +15,22 @@ export function dateToRelative(date: Date): string {
     return relativeTime.format(seconds, 'seconds');
 }
 
-export function dateFormatted(date: Date): string {
+export function formatDate(date: Date): string {
     return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' });
+}
+
+export function formatThousands(n: number): string {
+    const units = ['k', 'm', 'b', 't'];
+    const thresholds = [1000, 1000000, 1000000000, 1000000000000];
+
+    for (let i = 0; i < thresholds.length; i++) {
+        if (Math.abs(n) > thresholds[i]) {
+            const value = n / thresholds[i];
+            const unit = units[i];
+
+            return `${value.toFixed(1).endsWith('.0') ? Math.round(value) : value.toFixed(1)}${unit}`;
+        }
+    }
+
+    return n.toString();
 }
