@@ -35,7 +35,7 @@ async function logout() {
             </li>
         </ul>
 
-        <div v-else class="dropdown">
+        <section v-else class="dropdown">
             <button type="button">
                 <IconUserCircle color="black" :size="24" stroke-width="1.25" /> <span class="name">{{ user.name }}</span>
             </button>
@@ -46,7 +46,7 @@ async function logout() {
                 </li>
                 <li><a href="#" @click="logout()">Sair <IconLogout color="red" :size="24" stroke-width="1.25" /></a></li>
             </ul>
-        </div>
+        </section>
     </header>
 </template>
 

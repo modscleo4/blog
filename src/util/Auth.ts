@@ -1,6 +1,6 @@
 import { useAuthStore } from "../store.js";
 
-import { API_URL } from "./API.js";
+import { API_URL, fetchAPI } from "./API.js";
 import User from "./User.js";
 
 export default class Auth {
@@ -67,9 +67,11 @@ export default class Auth {
             return false;
         }
 
-        const response = await fetch(`${API_URL}/auth/user`, {
+        const response = await fetchAPI(`/auth/user`, {
+            method: 'GET',
+            auth: true,
             headers: {
-                'Authorization': `Bearer ${authStore.access_token}`,
+
             }
         });
 
@@ -78,9 +80,8 @@ export default class Auth {
             authStore.fetchUser(user);
             return user;
         } else if (response.status === 401) {
-            if (await Auth.refresh()) {
-                return await Auth.check();
-            }
+            authStore.logout();
+            return false;
         }
 
         throw new Error('Not logged in');

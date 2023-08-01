@@ -7,13 +7,11 @@ import FormPostSkeleton from '../../components/skeletons/post/Form.vue';
 const props = defineProps<{
     id: string;
 }>();
-
-const post = ref({});
 </script>
 
 <template>
     <Suspense>
-        <FormPost :postId="props.id" ref="post" />
+        <FormPost :postId="props.id" />
 
         <template #fallback>
             <FormPostSkeleton />

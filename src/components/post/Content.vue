@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 
 import ContentParagraph from './Content.Paragraph.vue';
-import { PostContent } from '../../util/Post';
+import { PostContent } from '../../util/content.js';
 
 const props = defineProps<{
     content: PostContent;
@@ -36,7 +36,8 @@ const props = defineProps<{
 
         <div v-else-if="block.type === 'code'" class="code">
             <header v-if="block.data.language">{{ block.data.language }}</header>
-            <pre><code>{{ block.data.code }}</code></pre>
+            <pre><code v-for="code in block.data.code.split('\n')">{{ code }}
+</code></pre>
         </div>
 
         <hr v-else-if="block.type === 'delimiter'" />
@@ -108,35 +109,57 @@ const props = defineProps<{
 </template>
 
 <style scoped>
+p {
+    margin: 0;
+    margin-bottom: 1rem;
+}
+
 .code {
     display: block;
     background: #ccc;
     border-radius: 0.25rem;
     margin: 0;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
     overflow: hidden;
+    font-family: 'Source Code Pro', monospace;
 }
 
 .code header {
     background: #bbb;
     padding: 0.125rem;
+    font-weight: 400;
+    user-select: none;
 }
 
 .code pre {
     margin: 0;
     padding: 0.25rem;
     overflow: auto;
+    counter-reset: line;
 }
 
-pre code {
-    font-family: 'Source Code Pro', monospace;
+.code pre code {
+    font-weight: 300;
+}
+
+.code pre code::before {
+    counter-increment: line;
+    content: counter(line);
+    display: inline-block;
+    border-right: 1px solid #bbb;
+    padding: 0 0.5em;
+    margin-right: 0.5em;
+    color: #888;
+    user-select: none;
+    min-width: 2.5rem;
+    text-align: right;
 }
 
 blockquote {
     border-left: 4px solid #ccc;
     padding-left: 8px;
     margin: 0;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
 }
 
 blockquote footer {
@@ -170,6 +193,14 @@ table thead {
 
 table td,
 table th {
-    padding: 4px;
+    padding: 0.5rem;
+}
+
+table tbody tr:nth-child(odd) {
+    background: #eee;
+}
+
+table tbody tr:nth-child(even) {
+    background: #fff;
 }
 </style>

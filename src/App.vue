@@ -6,13 +6,10 @@ import { RouterView } from 'vue-router';
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 
 import Header from './components/Header.vue';
+import Error from './components/Error.vue';
 import Auth from './util/Auth.js';
 
-const authStore = useAuthStore();
-
-Auth.check().catch(() => {
-    authStore.logout();
-});
+Auth.check();
 </script>
 
 <template>
@@ -32,6 +29,7 @@ Auth.check().catch(() => {
     max-width: unset;
 }
 
+html,
 body {
     font-family: 'Lato', sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -41,6 +39,7 @@ body {
     margin: 0;
     padding: 0;
     font-size: 16px;
+    scroll-behavior: smooth;
 }
 
 body.modal-open {

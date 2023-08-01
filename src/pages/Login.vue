@@ -29,7 +29,7 @@ async function loginKeycloak() {
 </script>
 
 <template>
-    <div id="content">
+    <div class="content">
         <form action="#" @submit.prevent="login">
             <div class="row">
                 <label for="email" class="form-label">Email</label>
@@ -60,7 +60,7 @@ async function loginKeycloak() {
 </template>
 
 <style scoped>
-#content {
+.content {
     display: flex;
     justify-content: center;
     align-items: center;

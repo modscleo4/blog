@@ -1,20 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
 
 import Skeleton from '../../Skeleton.vue';
-
-const router = useRouter();
 </script>
 
 <template>
     <div>
-        <div id="card-container">
-            <span id="thumbnail" alt=""><Skeleton /></span>
-            <div id="card-content">
-                <span id="title"><Skeleton /></span>
+        <div class="card-container">
+            <span class="thumbnail" alt=""><Skeleton /></span>
+            <div class="card-content">
+                <span class="title"><Skeleton /></span>
 
-                <span id="resume"><Skeleton /></span>
+                <span class="resume"><Skeleton /></span>
             </div>
 
             <footer>
@@ -26,7 +23,7 @@ const router = useRouter();
 </template>
 
 <style scoped>
-#card-container {
+.card-container {
     display: block;
     border-radius: 4px;
     box-shadow: 1px 1px 6px 0 hsl(0deg 0% 0% / 15%);
@@ -38,26 +35,26 @@ const router = useRouter();
     width: 320px;
 }
 
-#card-content {
+.card-content {
     padding: 8px;
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-#thumbnail {
+.thumbnail {
     display: block;
     width: 100%;
     aspect-ratio: 16 / 9;
     object-fit: cover;
 }
 
-#title {
+.title {
     text-align: center;
     font-size: 24px;
 }
 
-#resume {
+.resume {
     font-size: 16px;
     text-align: justify;
 }

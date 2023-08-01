@@ -1,52 +1,51 @@
-import { useAuthStore, usePostsStore } from "../store.js";
-import { API_URL } from './API.js';
+import { useAuthStore } from "../store.js";
+import { API_URL, fetchAPI } from './API.js';
 import Auth from "./Auth.js";
 
-type BackendVote = {
+type BackendReplyVote = {
     id: string;
     userId: string | null;
-    postId: string;
+    replyId: string;
     kind: 'UPVOTE' | 'DOWNVOTE';
     createdAt: string;
     updatedAt?: string;
 };
 
-export default class Vote {
+export default class ReplyVote {
     public id: string;
     public userId: string | null;
-    public postId: string;
+    public replyId: string;
     public kind: 'UPVOTE' | 'DOWNVOTE';
     public createdAt: Date;
     public updatedAt?: Date;
 
-    constructor({ id = '', userId = null, postId = '', kind = 'UPVOTE', createdAt = '', updatedAt = '' }: BackendVote) {
+    constructor({ id = '', userId = null, replyId = '', kind = 'UPVOTE', createdAt = '', updatedAt = '' }: BackendReplyVote) {
         this.id = id;
         this.userId = userId;
-        this.postId = postId;
+        this.replyId = replyId;
         this.kind = kind;
         this.createdAt = new Date(createdAt);
         this.updatedAt = updatedAt ? new Date(updatedAt) : undefined;
     }
 
-    static async get(postId: string): Promise<Vote | null> {
+    static async get(replyId: string): Promise<ReplyVote | null> {
         const authStore = useAuthStore();
 
         if (!authStore.access_token) {
             return null;
         }
 
-        await Auth.check();
-
-        const response = await fetch(`${API_URL}/api/v1/post/${postId}/vote`, {
+        const response = await fetchAPI(`/api/v1/reply/${replyId}/vote`, {
             method: 'GET',
+            auth: true,
             headers: {
-                'Authorization': `Bearer ${authStore.access_token}`,
+
             },
         });
 
         if (response.status === 200) {
-            const vote: BackendVote = await response.json();
-            return new Vote(vote);
+            const vote: BackendReplyVote = await response.json();
+            return new ReplyVote(vote);
         } else if (response.status === 404) {
             return null;
         }
@@ -54,16 +53,12 @@ export default class Vote {
         throw new Error('Post not voted');
     }
 
-    static async update(postId: string, { kind }: { kind: 'UPVOTE' | 'DOWNVOTE'; }): Promise<Vote> {
-        const authStore = useAuthStore();
-
-        await Auth.check();
-
-        const response = await fetch(`${API_URL}/api/v1/post/${postId}/vote`, {
+    static async update(replyId: string, { kind }: { kind: 'UPVOTE' | 'DOWNVOTE'; }): Promise<ReplyVote> {
+        const response = await fetchAPI(`/api/v1/reply/${replyId}/vote`, {
             method: 'PUT',
+            auth: true,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${authStore.access_token}`,
             },
             body: JSON.stringify({
                 kind,
@@ -71,22 +66,19 @@ export default class Vote {
         });
 
         if (response.status === 200) {
-            const vote: BackendVote = await response.json();
-            return new Vote(vote);
+            const vote: BackendReplyVote = await response.json();
+            return new ReplyVote(vote);
         }
 
         throw new Error('Vote not voted');
     }
 
-    static async delete(postId: string) {
-        const authStore = useAuthStore();
-
-        await Auth.check();
-
-        const response = await fetch(`${API_URL}/api/v1/post/${postId}/vote`, {
+    static async delete(replyId: string) {
+        const response = await fetchAPI(`/api/v1/reply/${replyId}/vote`, {
             method: 'DELETE',
+            auth: true,
             headers: {
-                'Authorization': `Bearer ${authStore.access_token}`,
+
             },
         });
 

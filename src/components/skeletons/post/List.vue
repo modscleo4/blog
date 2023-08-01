@@ -1,15 +1,20 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 
 import CardPost from './Card.vue';
+
+const props = defineProps<{
+    header?: boolean;
+    grid?: boolean;
+}>();
 </script>
 
 <template>
-    <header>
+    <header v-if="header">
 
     </header>
 
-    <div id="list-container">
+    <div class="list-container" :class="{ 'grid': grid }">
         <CardPost v-for="i in new Array(15)" />
     </div>
 </template>
@@ -19,11 +24,18 @@ header {
     text-align: center;
 }
 
-#list-container {
+.list-container {
     display: flex;
-    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 0 0.5rem;
+    align-items: start;
+    overflow: auto;
+}
+
+.list-container.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 320px);
+    align-items: start;
     justify-content: center;
-    gap: 16px;
-    padding: 16px 0;
 }
 </style>

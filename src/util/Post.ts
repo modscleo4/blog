@@ -1,76 +1,16 @@
-import { useAuthStore, usePostsStore } from "../store.js";
-import { API_URL } from './API.js';
+import { useAuthStore } from "../store.js";
+import { API_URL, fetchAPI } from './API.js';
 import Auth from "./Auth.js";
-
-type PostContentBlock = {
-    type: 'paragraph',
-    data: {
-        text: string,
-    },
-} | {
-    type: 'header',
-    data: {
-        text: string,
-        level: number,
-    },
-} | {
-    type: 'code',
-    data: {
-        language?: string,
-        code: string,
-    },
-} | {
-    type: 'list',
-    data: {
-        style: 'ordered' | 'unordered',
-        items: string[],
-    },
-} | {
-    type: 'checklist',
-    data: {
-        items: {
-            text: string,
-            checked: boolean,
-        }[],
-    },
-} | {
-    type: 'quote',
-    data: {
-        text: string,
-        caption: string,
-        alignment: 'left' | 'center' | 'right',
-    },
-} | {
-    type: 'warning',
-    data: {
-        title: string,
-        message: string,
-    },
-} | {
-    type: 'delimiter',
-    data: {},
-} | {
-    type: 'table',
-    data: {
-        withHeadings: boolean,
-        content: string[][],
-    },
-};
-
-export type PostContent = {
-    time?: number,
-    blocks?: PostContentBlock[],
-    version?: string,
-};
+import { PostContent } from "./content.js";
 
 type BackendPost = {
     id: string,
-    userId: string | null,
+    userId: string,
     title: string,
     resume: string,
-    content: PostContent,
+    content?: PostContent,
     imageUrl: string,
-    user: { username: string; },
+    replies: { id: string }[],
     votes?: { [key: string]: number },
     createdAt: string;
     updatedAt: string;
@@ -78,32 +18,34 @@ type BackendPost = {
 
 export default class Post {
     public id: string;
-    public userId: string | null;
+    public userId: string;
     public title: string;
     public resume: string;
     public content: PostContent;
     public imageUrl: string;
-    public user: { username: string; };
+    public replies: { id: string }[];
     public votes: { [key: string]: number };
     public createdAt: Date;
     public updatedAt?: Date;
 
-    constructor({ id = '', userId = null, title = '', resume = '', content = {}, imageUrl = '#', user = { username: '' }, votes = {}, createdAt = '', updatedAt = '' }: BackendPost) {
+    constructor({ id, userId, title, resume, content = {}, imageUrl, replies = [], votes = {}, createdAt, updatedAt }: BackendPost) {
         this.id = id;
         this.userId = userId;
         this.title = title;
         this.resume = resume;
         this.content = content;
         this.imageUrl = imageUrl;
-        this.user = user;
+        this.replies = replies;
         this.votes = votes;
         this.createdAt = new Date(createdAt);
         this.updatedAt = updatedAt ? new Date(updatedAt) : undefined;
     }
 
-    static async getAll(): Promise<Post[]> {
+    static async getAll(username?: string): Promise<Post[]> {
         const fields = ['id', 'userId', 'title', 'resume', 'imageUrl', 'createdAt', 'updatedAt', 'user'].join(',');
-        const response = await fetch(`${API_URL}/api/v1/post/?fields=${fields}`);
+        const response = await fetchAPI(`/api/v1/post/?fields=${fields}${username ? `&username=${username}` : ''}`, {
+            method: 'GET',
+        });
 
         if (response.status === 200) {
             const posts: BackendPost[] = await response.json();
@@ -114,13 +56,11 @@ export default class Post {
     }
 
     static async create({ title, resume, content, imageUrl }: { title: string, resume: string, content: object, imageUrl: string; }): Promise<Post> {
-        const authStore = useAuthStore();
-
-        const response = await fetch(`${API_URL}/api/v1/post/`, {
+        const response = await fetchAPI(`/api/v1/post/`, {
             method: 'POST',
+            auth: true,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + (authStore.access_token ?? ''),
             },
             body: JSON.stringify({
                 title,
@@ -132,14 +72,18 @@ export default class Post {
 
         if (response.status === 201) {
             const newPost = await response.json();
-            return new Post(newPost);
+            const post = new Post(newPost);
+
+            return post;
         }
 
         throw new Error('Post not created');
     }
 
     static async get(id: string): Promise<Post> {
-        const response = await fetch(`${API_URL}/api/v1/post/${id}`);
+        const response = await fetchAPI(`/api/v1/post/${id}`, {
+            method: 'GET',
+        });
 
         if (response.status === 200) {
             const post: BackendPost = await response.json();
@@ -150,15 +94,11 @@ export default class Post {
     }
 
     static async update(id: string, { title, resume, content, imageUrl }: { title: string, resume: string, content: object, imageUrl: string; }): Promise<Post> {
-        const authStore = useAuthStore();
-
-        await Auth.check();
-
-        const response = await fetch(`${API_URL}/api/v1/post/${id}`, {
+        const response = await fetchAPI(`/api/v1/post/${id}`, {
             method: 'PUT',
+            auth: true,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${authStore.access_token}`
             },
             body: JSON.stringify({
                 title,
@@ -170,21 +110,20 @@ export default class Post {
 
         if (response.status === 200) {
             const updatedPost = await response.json();
-            return new Post(updatedPost);
+            const post = new Post(updatedPost);
+
+            return post;
         }
 
         throw new Error('Post not updated');
     }
 
     static async delete(id: string) {
-        const authStore = useAuthStore();
-
-        await Auth.check();
-
-        const response = await fetch(`${API_URL}/api/v1/post/${id}`, {
+        const response = await fetchAPI(`/api/v1/post/${id}`, {
             method: 'DELETE',
+            auth: true,
             headers: {
-                'Authorization': `Bearer ${authStore.access_token}`,
+
             },
         });
 

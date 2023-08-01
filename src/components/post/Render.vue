@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { IconArrowUp, IconArrowDown, IconEdit, IconTrash } from '@tabler/icons-vue';
-import { useAuthStore, usePostsStore } from '../../store';
+import { IconArrowUp, IconArrowDown, IconEdit, IconTrash, IconMessage2, IconUser } from '@tabler/icons-vue';
+import { useAuthStore } from '../../store';
 
+import Badge from '../Badge.vue';
 import PostContent from './Content.vue';
+import ReplyList from './reply/List.vue';
+import ReplyForm from './reply/Form.vue';
 import Post from '../../util/Post.js';
-import Vote from '../../util/Vote.js';
+import Reply from '../../util/Reply.js';
+import User from '../../util/User.js';
+import PostVote from '../../util/PostVote.js';
+import PostList from './List.vue';
 import { dateToRelative, formatDate, formatThousands } from '../../util/formatter.js';
 
 const props = defineProps<{
@@ -14,15 +20,16 @@ const props = defineProps<{
 }>();
 
 const authStore = useAuthStore();
-const postsStore = usePostsStore();
 
 const router = useRouter();
 
 const post = await Post.get(props.postId);
+const author = await User.get(post.userId);
+const replies = ref<{id: string}[]>(post.replies);
 
 const user = computed(() => authStore.user);
 
-const vote = ref<Vote | null>(await Vote.get(props.postId));
+const vote = ref<PostVote | null>(await PostVote.get(props.postId));
 
 const upvotes = ref<number>(post.votes['UPVOTE'] ?? 0);
 const downvotes = ref<number>(post.votes['DOWNVOTE'] ?? 0);
@@ -35,7 +42,6 @@ async function deletePost() {
 
     try {
         await Post.delete(post.id);
-        postsStore.deletePost(post.id);
         router.push('/');
     } catch (e) {
         console.error(e);
@@ -51,7 +57,7 @@ async function doVote(kind: 'UPVOTE' | 'DOWNVOTE') {
         const lastKind = vote.value?.kind;
 
         if (vote.value?.kind === kind) {
-            await Vote.delete(post.id);
+            await PostVote.delete(post.id);
             vote.value = null;
 
             switch (kind) {
@@ -67,7 +73,7 @@ async function doVote(kind: 'UPVOTE' | 'DOWNVOTE') {
             return;
         }
 
-        vote.value = await Vote.update(post.id, { kind });
+        vote.value = await PostVote.update(post.id, { kind });
 
         switch (kind) {
             case 'UPVOTE':
@@ -88,10 +94,14 @@ async function doVote(kind: 'UPVOTE' | 'DOWNVOTE') {
         console.error(e);
     }
 }
+
+function addReply(reply: Reply) {
+    replies.value.push({ id: reply.id });
+}
 </script>
 
 <template>
-    <div id="container">
+    <div class="container">
         <aside>
             <ul>
                 <li>
@@ -117,29 +127,56 @@ async function doVote(kind: 'UPVOTE' | 'DOWNVOTE') {
                         <IconTrash color="red" :size="24" stroke-width="1.25" />
                     </button>
                 </li>
+                <li>
+                    <button type="button" title="Comentários">
+                        <a href="#replies">
+                            <IconMessage2 color="black" :size="24" stroke-width="1.25" />
+                        </a>
+                    </button>
+                </li>
             </ul>
         </aside>
 
         <article>
-            <h1 id="title">{{ post.title }}</h1>
-            <p id="resume">{{ post.resume }}</p>
-            <img id="thumbnail" :src="post.imageUrl" alt="" />
-            <section id="author">
-                <span>por <a :href="`/${post.user.username}`">{{ post.user.username }}</a></span>
-                <span :title="formatDate(post.createdAt)">{{ dateToRelative(post.createdAt) }}</span>
-                <span v-if="post.updatedAt" :title="formatDate(post.updatedAt)">atualizado
-                    <b>{{ dateToRelative(post.updatedAt) }}</b></span>
+            <h1 class="title">{{ post.title }}</h1>
+            <p class="resume">{{ post.resume }}</p>
+            <img class="thumbnail" :src="post.imageUrl" alt="" />
+            <section class="info">
+                <Badge :title="formatDate(post.createdAt)">{{ dateToRelative(post.createdAt) }}</Badge>
+                <Badge v-if="post.updatedAt" :title="formatDate(post.updatedAt)">atualizado
+                    <b>{{ dateToRelative(post.updatedAt) }}</b>
+                </Badge>
             </section>
 
-            <section id="content">
+            <section class="content">
                 <PostContent :content="post.content" />
+            </section>
+
+            <hr />
+
+            <section class="author">
+                <section class="info">
+                    <IconUser color="black" :size="64" stroke-width="1.25" />
+                    <Badge :highlight="author.id === user?.id"><router-link :to="`/${author.username}`">{{ author.username }}</router-link></Badge>
+                    <Badge>{{ author.posts }} posts</Badge>
+                </section>
+                <section class="posts">
+                    <PostList :username="author.username" :exclude="author.id === post.userId ? [post.id] : []" />
+                </section>
+            </section>
+
+            <hr />
+
+            <section id="replies">
+                <ReplyForm v-if="user" :postId="post.id" @submit="addReply" />
+                <ReplyList :replies="replies" />
             </section>
         </article>
     </div>
 </template>
 
 <style scoped>
-#container {
+.container {
     display: grid;
     grid-template-columns: 1fr minmax(400px, 1200px) 1fr;
     gap: 1rem;
@@ -154,7 +191,7 @@ aside ul {
     display: flex;
     flex-direction: column;
     list-style: none;
-    gap: 8px;
+    gap: 0.25rem;
     padding: 0;
     margin: 0;
     align-items: center;
@@ -176,56 +213,71 @@ article {
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow: auto;
     gap: 1rem;
 }
 
-article #title {
+article .title {
     text-align: center;
     font-size: 3.5em;
     padding: 0 2rem;
     margin: 0;
 }
 
-article #resume {
+article .resume {
     text-align: center;
     font-size: 1.25em;
     padding: 0 2rem;
     margin: 0;
 }
 
-article #thumbnail {
+article .thumbnail {
     width: 100%;
     aspect-ratio: 16 / 9;
     object-fit: cover;
 }
 
-article section#author {
+article section.info {
     display: flex;
     gap: 0.5em;
     align-self: flex-start;
     padding: 0 2rem;
 }
 
-article section#author span {
-    padding: 4px;
-    border-radius: 4px;
-    background-color: #eee;
-}
-
-article section#author span:hover {
-    background-color: #ddd;
-}
-
-article #content {
+article .content {
     padding: 0 2rem;
     width: 100%;
     max-width: 100vw;
 }
 
+article .author {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+article .author .info {
+    display: flex;
+    align-items: start;
+}
+
+article .author .posts {
+    padding: 0 0.5rem;
+}
+
+article #replies {
+    width: 100%;
+    max-width: 100vw;
+}
+
+hr {
+    width: 100%;
+    color: #ddd;
+}
+
 @media (max-width: 1300px) {
-    #container {
-        grid-template-columns: 1fr;
+    .container {
+        grid-template-columns: 100vw;
         grid-template-rows: auto auto;
     }
 

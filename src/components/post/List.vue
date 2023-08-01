@@ -1,32 +1,27 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { usePostsStore } from '../../store';
 
 import Post from '../../util/Post.js';
 import CardPost from './Card.vue';
+import { AppError } from '../../util/error';
 
 const props = defineProps<{
     username?: string,
-    postId?: string;
+    exclude?: string[];
+    header?: boolean;
+    grid?: boolean;
 }>();
 
-const postsStore = usePostsStore();
-
-if (postsStore.posts.length === 0) {
-    postsStore.updatePosts(await Post.getAll());
-}
-
-const posts = computed(() => postsStore.posts);
-const filteredPosts = computed(() => props.username ? posts.value.filter(post => post.user.username === props.username) : posts.value);
+const posts = (await Post.getAll(props.username)).filter(post => !props.exclude?.includes(post.id));
 </script>
 
 <template>
     <header>
-        <h1 v-if="username">{{ filteredPosts.length }} posts de {{ username }}</h1>
+        <h1 v-if="header && posts && username">{{ posts.length }} posts de {{ username }}</h1>
     </header>
 
-    <div v-if="posts && posts.length > 0" id="list-container">
-        <CardPost v-for="post in filteredPosts" :key="post.id" :post="post" />
+    <div v-if="posts && posts.length > 0" class="list-container" :class="{'grid': grid}">
+        <CardPost v-for="post in posts" :key="post.id" :post="post" />
     </div>
     <div v-else>
         <p>Nenhum post encontrado :(</p>
@@ -38,11 +33,18 @@ header {
     text-align: center;
 }
 
-#list-container {
+.list-container {
     display: flex;
-    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 0.5rem;
+    align-items: start;
+    overflow: auto;
+}
+
+.list-container.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 320px);
+    align-items: start;
     justify-content: center;
-    gap: 16px;
-    padding: 16px 0;
 }
 </style>

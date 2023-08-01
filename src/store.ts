@@ -42,26 +42,22 @@ export const useAuthStore = defineStore('user', {
     }
 });
 
-export const usePostsStore = defineStore('posts', {
+export const useUsersStore = defineStore('users', {
     state: () => ({
-        posts: [] as Post[],
+        users: [] as User[],
     }),
     actions: {
-        updatePosts(posts: Post[]) {
-            this.posts = posts;
+        updateUsers(users: User[]) {
+            this.users = users;
         },
 
-        addOrUpdatePost(post: Post) {
-            const index = this.posts.findIndex(p => p.id === post.id);
+        addOrUpdateUser(post: User) {
+            const index = this.users.findIndex(p => p.id === post.id);
             if (index !== -1) {
-                this.posts[index] = post;
+                this.users[index] = post;
             } else {
-                this.posts.push(post);
+                this.users.push(post);
             }
         },
-
-        deletePost(id: string) {
-            this.posts = this.posts.filter(p => p.id !== id);
-        }
     }
 });

@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 
 import ListPost from '../components/post/List.vue';
+import ListPostSkeleton from '../components/skeletons/post/List.vue';
 
 const props = defineProps<{
     username?: string;
@@ -9,12 +10,12 @@ const props = defineProps<{
 </script>
 
 <template>
-    <div id="content">
+    <div class="content">
         <Suspense>
-            <ListPost :username="username" />
+            <ListPost :username="username" :header="true" :grid="true" />
 
             <template #fallback>
-                <div>Carregando...</div>
+                <ListPostSkeleton :header="true" :grid="true" />
             </template>
         </Suspense>
     </div>
@@ -22,8 +23,9 @@ const props = defineProps<{
 
 
 <style scoped>
-#content {
-    /* max-width: 1200px; */
+.content {
     justify-self: center;
+    width: 100%;
+    padding: 1rem 0;
 }
 </style>

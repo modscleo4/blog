@@ -6,12 +6,12 @@ import ListPostSkeleton from '../components/skeletons/post/List.vue';
 </script>
 
 <template>
-    <div id="content">
+    <div class="content">
         <Suspense>
-            <ListPost />
+            <ListPost :header="true" :grid="true" />
 
             <template #fallback>
-                <ListPostSkeleton />
+                <ListPostSkeleton :header="true" :grid="true" />
             </template>
         </Suspense>
     </div>
@@ -19,8 +19,9 @@ import ListPostSkeleton from '../components/skeletons/post/List.vue';
 
 
 <style scoped>
-#content {
-    /* max-width: 1200px; */
+.content {
     justify-self: center;
+    width: 100%;
+    padding: 1rem 0;
 }
 </style>
