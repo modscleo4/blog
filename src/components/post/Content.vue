@@ -166,6 +166,10 @@ blockquote footer {
     font-size: 0.75em;
 }
 
+hr {
+    color: #ddd;
+}
+
 ul,
 ol {
     margin: 0;
@@ -177,18 +181,16 @@ ol {
 
 table {
     width: 100%;
-}
-
-table,
-th,
-td {
-    border: 1px solid #aaa;
     border-collapse: collapse;
 }
 
+table th,
+table td {
+    border: 1px solid #ccc;
+}
+
 table thead {
-    border-bottom: 2px solid;
-    border-bottom-color: inherit;
+    border-bottom: 2px solid #ccc;
 }
 
 table td,
@@ -197,10 +199,10 @@ table th {
 }
 
 table tbody tr:nth-child(odd) {
-    background: #eee;
+    /* background: rgba(0, 0, 0, 0.05); */
 }
 
 table tbody tr:nth-child(even) {
-    background: #fff;
+
 }
 </style>

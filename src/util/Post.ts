@@ -55,7 +55,7 @@ export default class Post {
         throw new Error('Posts not found');
     }
 
-    static async create({ title, resume, content, imageUrl }: { title: string, resume: string, content: object, imageUrl: string; }): Promise<Post> {
+    static async create({ title, resume, content, imageUrl }: { title: string, resume: string, content: object, imageUrl: string; }): Promise<Post | false> {
         const response = await fetchAPI(`/api/v1/post/`, {
             method: 'POST',
             auth: true,
@@ -75,6 +75,8 @@ export default class Post {
             const post = new Post(newPost);
 
             return post;
+        } else if (response.status === 403) {
+            return false;
         }
 
         throw new Error('Post not created');
@@ -93,7 +95,7 @@ export default class Post {
         throw new Error('Post not found');
     }
 
-    static async update(id: string, { title, resume, content, imageUrl }: { title: string, resume: string, content: object, imageUrl: string; }): Promise<Post> {
+    static async update(id: string, { title, resume, content, imageUrl }: { title: string, resume: string, content: object, imageUrl: string; }): Promise<Post | false> {
         const response = await fetchAPI(`/api/v1/post/${id}`, {
             method: 'PUT',
             auth: true,
@@ -113,12 +115,14 @@ export default class Post {
             const post = new Post(updatedPost);
 
             return post;
+        } else if (response.status === 403) {
+            return false;
         }
 
         throw new Error('Post not updated');
     }
 
-    static async delete(id: string) {
+    static async delete(id: string): Promise<boolean> {
         const response = await fetchAPI(`/api/v1/post/${id}`, {
             method: 'DELETE',
             auth: true,
@@ -129,6 +133,8 @@ export default class Post {
 
         if (response.status === 204) {
             return true;
+        } else if (response.status === 403) {
+            return false;
         }
 
         throw new Error('Post not deleted');

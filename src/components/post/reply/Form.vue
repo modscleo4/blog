@@ -4,6 +4,7 @@ import { ref } from 'vue';
 import Editor from '../Editor.vue';
 import Reply from '../../../util/Reply.js';
 import { PostContent } from '../../../util/content';
+import { showErrorToast, showToast } from '../../../util/toast';
 
 const props = defineProps<{
     postId: string;
@@ -30,11 +31,22 @@ async function submit() {
             content: content.value!,
         }));
 
+        if (!_reply) {
+            showToast('Erro', 'Não foi possível salvar a resposta.', 'error');
+            return;
+        }
+
         content.value = null;
 
         emit('submit', _reply);
+
+        showToast('Sucesso', reply ? 'Resposta salva com sucesso.' : 'Resposta criada com sucesso.', 'success');
     } catch (e) {
-        alert(e);
+        if (e instanceof Error) {
+            showErrorToast(e);
+        } else {
+            showToast('Erro', 'Não foi possível salvar a resposta.', 'error');
+        }
     }
 }
 </script>

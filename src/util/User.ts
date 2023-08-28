@@ -1,4 +1,4 @@
-import { API_URL, fetchAPI } from "./API";
+import { fetchAPI } from "./API";
 import { useUsersStore } from "../store";
 
 type BackendUser = {
@@ -6,6 +6,7 @@ type BackendUser = {
     username: string;
     email?: string;
     name: string;
+    bio: string;
     posts?: number;
 };
 
@@ -14,13 +15,16 @@ export default class User {
     public username: string;
     public email?: string;
     public name: string;
+    public bio: string;
     public posts?: number;
+    public emailVerifiedAt?: string;
 
-    constructor({ id, username, email, name, posts }: BackendUser) {
+    constructor({ id, username, email, name, bio, posts }: BackendUser) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.name = name;
+        this.bio = bio;
         this.posts = posts;
     }
 

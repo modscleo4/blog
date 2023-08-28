@@ -51,7 +51,7 @@ export default class Reply {
         throw new Error('Post not found');
     }
 
-    static async create({ postId, replyId, content }: { postId: string, replyId?: string, content: object; }): Promise<Reply> {
+    static async create({ postId, replyId, content }: { postId: string, replyId?: string, content: object; }): Promise<Reply | false> {
         const response = await fetchAPI(`/api/v1/${replyId ? 'reply' : 'post'}/${replyId ?? postId}/reply`, {
             method: 'POST',
             auth: true,
@@ -66,6 +66,8 @@ export default class Reply {
         if (response.status === 201) {
             const newReply = await response.json();
             return new Reply(newReply);
+        } else if (response.status === 403) {
+            return false;
         }
 
         throw new Error('Reply not created');
@@ -82,7 +84,7 @@ export default class Reply {
         throw new Error('Reply not found');
     }
 
-    static async update(id: string, { content }: { content: object; }): Promise<Reply> {
+    static async update(id: string, { content }: { content: object; }): Promise<Reply | false> {
         const response = await fetchAPI(`/api/v1/post/${id}`, {
             method: 'PUT',
             auth: true,
@@ -97,12 +99,14 @@ export default class Reply {
         if (response.status === 200) {
             const updatedPost = await response.json();
             return new Reply(updatedPost);
+        } else if (response.status === 403) {
+            return false;
         }
 
         throw new Error('Reply not updated');
     }
 
-    static async delete(id: string) {
+    static async delete(id: string): Promise<boolean> {
         const response = await fetchAPI(`/api/v1/reply/${id}`, {
             method: 'DELETE',
             auth: true,
@@ -113,6 +117,8 @@ export default class Reply {
 
         if (response.status === 204) {
             return true;
+        } else if (response.status === 403) {
+            return false;
         }
 
         throw new Error('Reply not deleted');

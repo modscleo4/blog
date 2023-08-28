@@ -3,7 +3,7 @@ import { computed } from '@vue/reactivity';
 import { RouterLink, useRouter } from 'vue-router';
 import { useAuthStore } from '../store';
 
-import { IconHome, IconPencil, IconLogin, IconLogout, IconUser, IconUserCircle } from '@tabler/icons-vue';
+import { IconHome, IconPencil, IconLogin, IconLogout, IconUser, IconUserCircle, IconBell } from '@tabler/icons-vue';
 
 import Auth from '../util/Auth.js';
 
@@ -19,39 +19,55 @@ async function logout() {
 </script>
 
 <template>
-    <header class="navbar">
+    <nav>
         <ul>
             <li>
-                <router-link to="/"><IconHome color="purple" :size="24" stroke-width="1.25" /> Home</router-link>
+                <router-link to="/" active-class="active"><IconHome color="purple" :size="24" stroke-width="1.25" /> Home</router-link>
             </li>
             <li v-if="user">
-                <router-link to="/posts/create"><IconPencil color="blue" :size="24" stroke-width="1.25" /> Criar Post</router-link>
+                <router-link to="/posts/create" active-class="active"><IconPencil color="blue" :size="24" stroke-width="1.25" /> Criar Post</router-link>
             </li>
         </ul>
 
         <ul v-if="!user">
             <li>
-                <router-link to="/login"><IconLogin style="transform: rotateY(180deg);" color="blue" :size="24" stroke-width="1.25" /> Login</router-link>
+                <router-link to="/login" active-class="active"><IconLogin style="transform: rotateY(180deg);" color="blue" :size="24" stroke-width="1.25" /> Login</router-link>
             </li>
         </ul>
 
-        <section v-else class="dropdown">
-            <button type="button">
-                <IconUserCircle color="black" :size="24" stroke-width="1.25" /> <span class="name">{{ user.name }}</span>
-            </button>
+        <ul v-else class="button-container">
+            <li>
+                <section class="dropdown">
+                    <button type="button">
+                        <IconBell color="black" :size="24" stroke-width="1.25" />
+                    </button>
 
-            <ul>
-                <li>
-                    <router-link :to="`/${user.username}`">Perfil <IconUser color="black" :size="24" stroke-width="1.25" /></router-link>
-                </li>
-                <li><a href="#" @click="logout()">Sair <IconLogout color="red" :size="24" stroke-width="1.25" /></a></li>
-            </ul>
-        </section>
-    </header>
+                    <ul>
+                        <li><a href="#">Nenhuma notificação.</a></li>
+                    </ul>
+                </section>
+            </li>
+
+            <li>
+                <section class="dropdown">
+                    <button type="button">
+                        <IconUserCircle color="black" :size="24" stroke-width="1.25" /> <span class="name">{{ user.name }}</span>
+                    </button>
+
+                    <ul>
+                        <li>
+                            <router-link :to="`/${user.username}`">Perfil <IconUser color="black" :size="24" stroke-width="1.25" /></router-link>
+                        </li>
+                        <li><a href="#" @click="logout()">Sair <IconLogout color="red" :size="24" stroke-width="1.25" /></a></li>
+                    </ul>
+                </section>
+            </li>
+        </ul>
+    </nav>
 </template>
 
 <style scoped>
-header {
+nav {
     display: grid;
     grid-template-columns: auto auto;
     justify-content: space-between;
@@ -65,37 +81,33 @@ header {
     min-height: 3rem;
 }
 
-header > ul {
+nav > ul {
     display: flex;
-    gap: 16px;
+    gap: 0.75rem;
     padding: 0;
     margin: 0;
     align-items: center;
 }
 
-header > ul > li {
+nav > ul > li {
     list-style: none;
 }
 
-header > ul > li > a {
+nav > ul > li > a {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.25rem;
     text-decoration: none;
     text-underline-offset: 0.25rem;
     color: #333;
 }
 
-header > ul > li > a:hover {
+nav > ul > li > a:hover,
+nav > ul > li > a.active {
     text-decoration: underline;
 }
 
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdown > button {
+nav > ul > li button {
     border: none;
     background-color: transparent;
     cursor: pointer;
@@ -107,12 +119,17 @@ header > ul > li > a:hover {
     border-radius: 2rem;
 }
 
-.dropdown > button:hover {
+nav > ul > li button:hover {
     background-color: #ddd;
 }
 
-.dropdown > button:focus {
+nav > ul > li button:focus {
     box-shadow: 0 0 0 2px #ddd;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
 }
 
 .dropdown > ul {
@@ -125,7 +142,7 @@ header > ul > li > a:hover {
     right: 0;
     background-color: #f7f7f7;
     border: 1px solid #ddd;
-    width: 100%;
+    min-width: 100%;
 }
 
 .dropdown > ul > li {

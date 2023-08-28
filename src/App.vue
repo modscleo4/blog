@@ -1,21 +1,61 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useAuthStore } from './store';
+import { useAuthStore, useToastsStore } from './store';
 import { RouterView } from 'vue-router';
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 
+const toastsStore = useToastsStore();
+
 import Header from './components/Header.vue';
-import Error from './components/Error.vue';
+import Toast from './components/Toast.vue';
 import Auth from './util/Auth.js';
 
 Auth.check();
+
+window.addEventListener('error', e => {
+    toastsStore.addError(e.error);
+    return false; // allows the default event handler to fire
+});
+
+window.addEventListener('unhandledrejection', e => {
+    if (e.reason instanceof Error) {
+        toastsStore.addError(e.reason);
+    } else {
+        toastsStore.addToast('error', 'Unhandled Promise Rejection', e.reason);
+    }
+});
 </script>
 
 <template>
     <Header />
-    <router-view></router-view>
+    <router-view :key="$route.fullPath"></router-view>
+
+    <ul>
+        <li v-for="toast in toastsStore.toasts" :key="toast.id" @click="toastsStore.removeToast(toast.id)">
+            <Toast :toast="toast" />
+        </li>
+    </ul>
 </template>
+
+<style scoped>
+ul {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 0;
+    padding: 1rem;
+    list-style: none;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+ul li {
+    cursor: pointer;
+}
+</style>
 
 <style>
 *,

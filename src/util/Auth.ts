@@ -2,6 +2,7 @@ import { useAuthStore } from "../store.js";
 
 import { API_URL, fetchAPI } from "./API.js";
 import User from "./User.js";
+import { showToast } from "./toast.js";
 
 export default class Auth {
     static handleLogin(access_token: string, refresh_token: string, remember: boolean = false) {
@@ -54,8 +55,10 @@ export default class Auth {
             const { access_token, refresh_token } = await response.json();
             Auth.handleLogin(access_token, refresh_token, authStore.remember);
             return true;
-        } else {
+        } else if (response.status === 401) {
             authStore.logout();
+            return false;
+        } else {
             return false;
         }
     }
@@ -77,6 +80,10 @@ export default class Auth {
 
         if (response.status === 200) {
             const user: User = await response.json();
+            if (user.emailVerifiedAt === null) {
+                showToast('Verificar email', 'Verifique seu email para poder postar e comentar', 'warning');
+            }
+
             authStore.fetchUser(user);
             return user;
         } else if (response.status === 401) {

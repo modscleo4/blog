@@ -1,6 +1,5 @@
 import Auth from "./Auth";
 import { useAuthStore } from "../store";
-import { AppError } from "./error";
 
 export const API_URL = import.meta.env.VITE_API_URL;
 

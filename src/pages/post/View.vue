@@ -7,6 +7,7 @@ import Post from '../../util/Post';
 
 const props = defineProps<{
     id: string;
+    title: string;
 }>();
 </script>
 

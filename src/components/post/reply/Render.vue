@@ -10,6 +10,7 @@ import User from '../../../util/User.js';
 import ReplyVote from '../../../util/ReplyVote';
 import { useAuthStore } from '../../../store';
 import { dateToRelative, formatDate, formatThousands } from '../../../util/formatter.js';
+import { showErrorToast, showToast } from '../../../util/toast';
 
 const props = defineProps<{
     replyId: string;
@@ -38,11 +39,11 @@ async function deleteReply() {
         return;
     }
 
-    try {
-        await Reply.delete(reply.id);
+    if (await Reply.delete(reply.id)) {
         emit('delete', reply.id);
-    } catch (e) {
-        console.error(e);
+        showToast('Sucesso', 'Resposta excluída com sucesso.', 'success');
+    } else {
+        showToast('Erro', 'Não foi possível excluir a resposta.', 'error');
     }
 }
 
@@ -55,7 +56,11 @@ async function doVote(kind: 'UPVOTE' | 'DOWNVOTE') {
         const lastKind = vote.value?.kind;
 
         if (vote.value?.kind === kind) {
-            await ReplyVote.delete(reply.id);
+            if (!await ReplyVote.delete(reply.id)) {
+                showToast('Erro', 'Não foi possível remover o voto.', 'error');
+                return;
+            }
+
             vote.value = null;
 
             switch (kind) {
@@ -71,7 +76,13 @@ async function doVote(kind: 'UPVOTE' | 'DOWNVOTE') {
             return;
         }
 
-        vote.value = await ReplyVote.update(reply.id, { kind });
+        const updatedVote = await ReplyVote.update(reply.id, { kind });
+        if (updatedVote) {
+            vote.value = updatedVote;
+        } else {
+            showToast('Erro', 'Não foi possível atualizar o voto.', 'error');
+            return;
+        }
 
         switch (kind) {
             case 'UPVOTE':
@@ -89,7 +100,11 @@ async function doVote(kind: 'UPVOTE' | 'DOWNVOTE') {
                 break;
         }
     } catch (e) {
-        console.error(e);
+        if (e instanceof Error) {
+            showErrorToast(e);
+        } else {
+            showToast('Erro', 'Não foi possível atualizar o voto.', 'error');
+        }
     }
 }
 </script>

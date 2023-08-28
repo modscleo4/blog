@@ -50,10 +50,10 @@ export default class PostVote {
             return null;
         }
 
-        throw new Error('Post not voted');
+        throw new Error('Failed to fetch post vote');
     }
 
-    static async update(postId: string, { kind }: { kind: 'UPVOTE' | 'DOWNVOTE'; }): Promise<PostVote> {
+    static async update(postId: string, { kind }: { kind: 'UPVOTE' | 'DOWNVOTE'; }): Promise<PostVote | false> {
         const response = await fetchAPI(`/api/v1/post/${postId}/vote`, {
             method: 'PUT',
             auth: true,
@@ -68,12 +68,14 @@ export default class PostVote {
         if (response.status === 200) {
             const vote: BackendPostVote = await response.json();
             return new PostVote(vote);
+        } else if (response.status === 403) {
+            return false;
         }
 
-        throw new Error('Vote not voted');
+        throw new Error('Failed to update post vote');
     }
 
-    static async delete(postId: string) {
+    static async delete(postId: string): Promise<boolean> {
         const response = await fetchAPI(`/api/v1/post/${postId}/vote`, {
             method: 'DELETE',
             auth: true,
@@ -84,8 +86,10 @@ export default class PostVote {
 
         if (response.status === 204) {
             return true;
+        } else if (response.status === 403) {
+            return false;
         }
 
-        throw new Error('Vote not deleted');
+        throw new Error('Failed to delete post vote');
     }
 }

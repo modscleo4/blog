@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 
 import Editor from './Editor.vue';
 import Post from '../../util/Post.js';
+import { showErrorToast, showToast } from '../../util/toast';
 
 const props = defineProps<{
     postId?: string;
@@ -43,8 +44,13 @@ async function save() {
         }));
 
         router.push('/');
+        showToast('Sucesso', post ? 'Post salvo com sucesso.' : 'Post criado com sucesso.', 'success');
     } catch (e) {
-        alert(e);
+        if (e instanceof Error) {
+            showErrorToast(e);
+        } else {
+            showToast('Erro', 'Não foi possível salvar o post.', 'error');
+        }
     }
 }
 </script>

@@ -32,19 +32,19 @@ async function loginKeycloak() {
     <div class="content">
         <form action="#" @submit.prevent="login">
             <div class="row">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" required v-model="email">
+                <label for="email">Email</label>
+                <input type="email" id="email" required v-model="email">
             </div>
 
             <div class="row">
-                <label for="password" class="form-label">Senha</label>
-                <input type="password" class="form-control" id="password" required v-model="password">
+                <label for="password">Senha</label>
+                <input type="password" id="password" required v-model="password">
             </div>
 
             <div class="row">
-                <div class="form-check col-md-6">
-                    <input type="checkbox" class="form-check-input" id="remember" v-model="remember">
-                    <label for="remember" class="form-check-label">Lembrar-me</label>
+                <div>
+                    <input type="checkbox" id="remember" v-model="remember">
+                    <label for="remember">Lembrar-me</label>
                 </div>
             </div>
 
@@ -92,6 +92,13 @@ textarea {
 
 textarea {
     resize: none;
+}
+
+input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    margin: 0;
+    margin-right: 0.5rem;
 }
 
 button[type="button"] {

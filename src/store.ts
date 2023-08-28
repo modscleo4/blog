@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import Post from './util/Post';
 import User from './util/User';
+import { Toast, ToastType } from './util/toast';
 
 export const useAuthStore = defineStore('user', {
     state: () => ({
@@ -59,5 +60,45 @@ export const useUsersStore = defineStore('users', {
                 this.users.push(post);
             }
         },
+    }
+});
+
+export const useToastsStore = defineStore('toast', {
+    state: () => ({
+        toasts: [] as Toast[],
+    }),
+    actions: {
+        addError(error: Error, timeout: number | null = 5000): string {
+            return this.addToast('error', error.name, error.message, timeout);
+        },
+
+        addToast(type: ToastType, title: string, message: string, timeout: number | null = 5000): string {
+            const id = crypto.randomUUID();
+
+            this.toasts.push({
+                id,
+                type,
+                title,
+                message,
+                timeout,
+            });
+
+            if (timeout !== null) {
+                setTimeout(() => {
+                    this.removeToast(id);
+                }, timeout);
+            }
+
+            return id;
+        },
+
+        removeToast(id: string): boolean {
+            const index = this.toasts.findIndex(t => t.id === id);
+            if (index !== -1) {
+                this.toasts.splice(index, 1);
+            }
+
+            return index !== -1;
+        }
     }
 });

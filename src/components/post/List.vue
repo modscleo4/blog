@@ -3,7 +3,6 @@ import { computed, ref } from 'vue';
 
 import Post from '../../util/Post.js';
 import CardPost from './Card.vue';
-import { AppError } from '../../util/error';
 
 const props = defineProps<{
     username?: string,

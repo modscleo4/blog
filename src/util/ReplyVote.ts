@@ -50,10 +50,10 @@ export default class ReplyVote {
             return null;
         }
 
-        throw new Error('Post not voted');
+        throw new Error('Failed to fetch reply vote');
     }
 
-    static async update(replyId: string, { kind }: { kind: 'UPVOTE' | 'DOWNVOTE'; }): Promise<ReplyVote> {
+    static async update(replyId: string, { kind }: { kind: 'UPVOTE' | 'DOWNVOTE'; }): Promise<ReplyVote| false> {
         const response = await fetchAPI(`/api/v1/reply/${replyId}/vote`, {
             method: 'PUT',
             auth: true,
@@ -68,12 +68,14 @@ export default class ReplyVote {
         if (response.status === 200) {
             const vote: BackendReplyVote = await response.json();
             return new ReplyVote(vote);
+        } else if (response.status === 403) {
+            return false;
         }
 
-        throw new Error('Vote not voted');
+        throw new Error('Failed to update reply vote');
     }
 
-    static async delete(replyId: string) {
+    static async delete(replyId: string): Promise<boolean> {
         const response = await fetchAPI(`/api/v1/reply/${replyId}/vote`, {
             method: 'DELETE',
             auth: true,
@@ -84,8 +86,10 @@ export default class ReplyVote {
 
         if (response.status === 204) {
             return true;
+        } else if (response.status === 403) {
+            return false;
         }
 
-        throw new Error('Vote not deleted');
+        throw new Error('Failed to delete reply vote');
     }
 }

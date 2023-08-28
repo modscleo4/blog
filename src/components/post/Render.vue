@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, onBeforeMount, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { IconArrowUp, IconArrowDown, IconEdit, IconTrash, IconMessage2, IconUser } from '@tabler/icons-vue';
 import { useAuthStore } from '../../store';
@@ -14,6 +14,8 @@ import User from '../../util/User.js';
 import PostVote from '../../util/PostVote.js';
 import PostList from './List.vue';
 import { dateToRelative, formatDate, formatThousands } from '../../util/formatter.js';
+import { showToast, showErrorToast } from '../../util/toast.js';
+import { clamp } from '../../util/math.js';
 
 const props = defineProps<{
     postId: string;
@@ -40,11 +42,11 @@ async function deletePost() {
         return;
     }
 
-    try {
-        await Post.delete(post.id);
+    if (await Post.delete(post.id)) {
         router.push('/');
-    } catch (e) {
-        console.error(e);
+        showToast('Sucesso', 'Post excluído com sucesso.', 'success');
+    } else {
+        showToast('Erro', 'Não foi possível excluir o post.', 'error');
     }
 }
 
@@ -57,7 +59,11 @@ async function doVote(kind: 'UPVOTE' | 'DOWNVOTE') {
         const lastKind = vote.value?.kind;
 
         if (vote.value?.kind === kind) {
-            await PostVote.delete(post.id);
+            if (!await PostVote.delete(post.id)) {
+                showToast('Erro', 'Não foi possível remover o voto.', 'error');
+                return;
+            }
+
             vote.value = null;
 
             switch (kind) {
@@ -73,7 +79,13 @@ async function doVote(kind: 'UPVOTE' | 'DOWNVOTE') {
             return;
         }
 
-        vote.value = await PostVote.update(post.id, { kind });
+        const updatedVote = await PostVote.update(post.id, { kind });
+        if (updatedVote) {
+            vote.value = updatedVote;
+        } else {
+            showToast('Erro', 'Não foi possível atualizar o voto.', 'error');
+            return;
+        }
 
         switch (kind) {
             case 'UPVOTE':
@@ -91,13 +103,36 @@ async function doVote(kind: 'UPVOTE' | 'DOWNVOTE') {
                 break;
         }
     } catch (e) {
-        console.error(e);
+        if (e instanceof Error) {
+            showErrorToast(e);
+        } else {
+            showToast('Erro', 'Não foi possível atualizar o voto.', 'error');
+        }
     }
 }
 
 function addReply(reply: Reply) {
     replies.value.push({ id: reply.id });
 }
+
+function onScroll(e: Event) {
+    const boundingRect = document.querySelector('article section.content')?.getBoundingClientRect();
+    if (!boundingRect) {
+        return;
+    }
+
+    const percent = -boundingRect.y / boundingRect.height;
+
+    document.querySelector<HTMLDivElement>('div.container')?.style?.setProperty('--percent', `${clamp(percent * 100, 0, 100)}%`);
+}
+
+onBeforeMount(() => {
+    window.addEventListener('scroll', onScroll);
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener('scroll', onScroll);
+});
 </script>
 
 <template>
@@ -156,10 +191,18 @@ function addReply(reply: Reply) {
 
             <section class="author">
                 <section class="info">
-                    <IconUser color="black" :size="64" stroke-width="1.25" />
-                    <Badge :highlight="author.id === user?.id"><router-link :to="`/${author.username}`">{{ author.username }}</router-link></Badge>
-                    <Badge>{{ author.posts }} posts</Badge>
+                    <IconUser class="icon" color="black" :size="64" stroke-width="1.25" />
+                    <div class="badges">
+                        <Badge :highlight="author.id === user?.id"><router-link :to="`/${author.username}`">{{ author.username }}</router-link></Badge>
+                        <Badge>{{ author.posts }} posts</Badge>
+                    </div>
+
+                    <div class="about">
+                        <p>{{ author.name }}</p>
+                        <p>{{ author.bio }}</p>
+                    </div>
                 </section>
+
                 <section class="posts">
                     <PostList :username="author.username" :exclude="author.id === post.userId ? [post.id] : []" />
                 </section>
@@ -181,6 +224,18 @@ function addReply(reply: Reply) {
     grid-template-columns: 1fr minmax(400px, 1200px) 1fr;
     gap: 1rem;
     padding: 1rem 0;
+    position: relative;
+}
+
+.container::before {
+    content: '';
+    position: fixed;
+    margin-top: -1rem;
+    left: 0;
+    height: 1rem;
+    width: var(--percent, 0%);
+    background-color: rgba(195, 101, 238, 0.15);
+    z-index: 9999;
 }
 
 aside {
@@ -216,40 +271,40 @@ article {
     gap: 1rem;
 }
 
-article .title {
+article > .title {
     text-align: center;
     font-size: 3.5em;
     padding: 0 2rem;
     margin: 0;
 }
 
-article .resume {
+article > .resume {
     text-align: center;
     font-size: 1.25em;
     padding: 0 2rem;
     margin: 0;
 }
 
-article .thumbnail {
+article > .thumbnail {
     width: 100%;
     aspect-ratio: 16 / 9;
     object-fit: cover;
 }
 
-article section.info {
+article > section.info {
     display: flex;
     gap: 0.5em;
     align-self: flex-start;
     padding: 0 2rem;
 }
 
-article .content {
+article > section.content {
     padding: 0 2rem;
     width: 100%;
     max-width: 100vw;
 }
 
-article .author {
+article > .author {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -257,12 +312,29 @@ article .author {
 }
 
 article .author .info {
+    display: grid;
+    grid-template-areas: "icon badges" "icon about";
+    justify-content: start;
+    gap: 0.5rem;
+}
+
+article .author .info .icon {
+    grid-area: icon;
+}
+
+article .author .info .badges {
+    grid-area: badges;
     display: flex;
-    align-items: start;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
+article .author .info .about {
+    grid-area: about;
 }
 
 article .author .posts {
-    padding: 0 0.5rem;
+    position: relative;
 }
 
 article #replies {
