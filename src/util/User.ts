@@ -28,7 +28,7 @@ export default class User {
         this.posts = posts;
     }
 
-    static async get(id: string) {
+    static async get(id: string): Promise<User> {
         const usersStore = useUsersStore();
         if (usersStore.users.find(user => user.id === id)) {
             return usersStore.users.find(user => user.id === id)!;
@@ -46,6 +46,27 @@ export default class User {
             return user;
         }
 
-        throw new Error('Post not found');
+        throw new Error('User not found');
+    }
+
+    static async getByUsername(username: string): Promise<User> {
+        const usersStore = useUsersStore();
+        if (usersStore.users.find(user => user.username === username)) {
+            return usersStore.users.find(user => user.username === username)!;
+        }
+
+        const response = await fetchAPI(`/api/v1/user/@${username}`, {
+            method: 'GET',
+        });
+
+        if (response.status === 200) {
+            const foundUser: BackendUser = await response.json();
+            const user = new User(foundUser);
+            usersStore.addOrUpdateUser(user);
+
+            return user;
+        }
+
+        throw new Error('User not found');
     }
 }

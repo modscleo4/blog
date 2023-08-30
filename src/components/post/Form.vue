@@ -63,13 +63,13 @@ async function save() {
         </div>
 
         <div class="row">
-            <label for="imageUrl" class="form-label">URL Imagem</label>
-            <input id="imageUrl" type="text" class="form-control" v-model="imageUrl">
+            <label for="resume" class="form-label">Resumo</label>
+            <textarea id="resume" class="form-control" required style="resize: none;" rows="5" v-model="resume"></textarea>
         </div>
 
         <div class="row">
-            <label for="resume" class="form-label">Resumo</label>
-            <textarea id="resume" class="form-control" required style="resize: none;" rows="5" v-model="resume"></textarea>
+            <label for="imageUrl" class="form-label">URL Imagem</label>
+            <input id="imageUrl" type="text" class="form-control" v-model="imageUrl">
         </div>
 
         <div class="row">

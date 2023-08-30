@@ -2,8 +2,8 @@
 import { computed, ref, onBeforeMount, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { IconArrowUp, IconArrowDown, IconEdit, IconTrash, IconMessage2, IconUser } from '@tabler/icons-vue';
-import { useAuthStore } from '../../store';
 
+import { useAuthStore } from '../../store.js';
 import Badge from '../Badge.vue';
 import PostContent from './Content.vue';
 import ReplyList from './reply/List.vue';
@@ -116,12 +116,13 @@ function addReply(reply: Reply) {
 }
 
 function onScroll(e: Event) {
-    const boundingRect = document.querySelector('article section.content')?.getBoundingClientRect();
-    if (!boundingRect) {
+    const boundingRect = document.querySelector('article')?.getBoundingClientRect();
+    const repliesBoundingRect = document.querySelector('#replies')?.getBoundingClientRect();
+    if (!boundingRect || !repliesBoundingRect) {
         return;
     }
 
-    const percent = -boundingRect.y / boundingRect.height;
+    const percent = -boundingRect.y / (boundingRect.height - repliesBoundingRect.height);
 
     document.querySelector<HTMLDivElement>('div.container')?.style?.setProperty('--percent', `${clamp(percent * 100, 0, 100)}%`);
 }
