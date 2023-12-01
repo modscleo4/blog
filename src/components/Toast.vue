@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { Toast } from '../util/toast';
+import { Toast } from '../util/toast.js';
 
 const props = defineProps<{
     toast: Toast;

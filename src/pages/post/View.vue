@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 import PostRender from '../../components/post/Render.vue';
 import PostRenderSkeleton from '../../components/skeletons/post/Render.vue';
-import Post from '../../util/Post';
+import Post from '../../util/Post.js';
 
 const props = defineProps<{
     id: string;

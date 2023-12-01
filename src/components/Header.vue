@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed } from '@vue/reactivity';
 import { RouterLink, useRouter } from 'vue-router';
-import { useAuthStore } from '../store';
+import { useAuthStore } from '../store.js';
 
-import { IconHome, IconPencil, IconLogin, IconLogout, IconUser, IconUserCircle, IconBell } from '@tabler/icons-vue';
+import { IconHome, IconPencil, IconLogin, IconLogout, IconUser, IconUserCircle, IconBell, IconMail } from '@tabler/icons-vue';
 
 import Auth from '../util/Auth.js';
 
@@ -11,6 +11,10 @@ const authStore = useAuthStore();
 const router = useRouter();
 
 const user = computed(() => authStore.user);
+
+async function requestEmailVerification() {
+    await Auth.requestEmailVerification();
+}
 
 async function logout() {
     await Auth.logout();
@@ -56,8 +60,9 @@ async function logout() {
 
                     <ul>
                         <li>
-                            <router-link :to="`/${user.username}`">Perfil <IconUser color="black" :size="24" stroke-width="1.25" /></router-link>
+                            <router-link :to="`/@${user.username}`">Perfil <IconUser color="black" :size="24" stroke-width="1.25" /></router-link>
                         </li>
+                        <li v-if="user && !user.emailVerifiedAt"><a href="#" @click="requestEmailVerification()">Verificar email <IconMail color="blue" :size="24" stroke-width="1.25" /></a></li>
                         <li><a href="#" @click="logout()">Sair <IconLogout color="red" :size="24" stroke-width="1.25" /></a></li>
                     </ul>
                 </section>
@@ -143,6 +148,7 @@ nav > ul > li button:focus {
     background-color: #f7f7f7;
     border: 1px solid #ddd;
     min-width: 100%;
+    width: max-content;
 }
 
 .dropdown > ul > li {

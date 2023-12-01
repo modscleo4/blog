@@ -29,7 +29,7 @@ window.addEventListener('unhandledrejection', e => {
 
 <template>
     <Header />
-    <router-view :key="$route.fullPath"></router-view>
+    <router-view :key="$route.fullPath.split('#')[0]"></router-view>
 
     <ul>
         <li v-for="toast in toastsStore.toasts" :key="toast.id" @click="toastsStore.removeToast(toast.id)">

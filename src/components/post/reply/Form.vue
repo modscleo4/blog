@@ -3,8 +3,8 @@ import { ref } from 'vue';
 
 import Editor from '../Editor.vue';
 import Reply from '../../../util/Reply.js';
-import { PostContent } from '../../../util/content';
-import { showErrorToast, showToast } from '../../../util/toast';
+import { PostContent } from '../../../util/content.js';
+import { showErrorToast, showToast } from '../../../util/toast.js';
 
 const props = defineProps<{
     postId: string;

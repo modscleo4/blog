@@ -15,7 +15,7 @@ const props = defineProps<{
             <ListPost :username="username" :header="true" :grid="true" />
 
             <template #fallback>
-                <ListPostSkeleton :header="true" :grid="true" />
+                <ListPostSkeleton :header="true" :author="true" :grid="true" />
             </template>
         </Suspense>
     </div>

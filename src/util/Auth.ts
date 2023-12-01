@@ -2,7 +2,7 @@ import { useAuthStore } from "../store.js";
 
 import { API_URL, fetchAPI } from "./API.js";
 import User from "./User.js";
-import { showToast } from "./toast.js";
+import { showErrorToast, showToast } from "./toast.js";
 
 export default class Auth {
     static handleLogin(access_token: string, refresh_token: string, remember: boolean = false) {
@@ -82,6 +82,8 @@ export default class Auth {
             const user: User = await response.json();
             if (user.emailVerifiedAt === null) {
                 showToast('Verificar email', 'Verifique seu email para poder postar e comentar', 'warning');
+            } else if (authStore.user?.emailVerifiedAt === null) {
+                showToast('Email verificado', 'Seu email foi verificado com sucesso!', 'info');
             }
 
             authStore.fetchUser(user);
@@ -92,6 +94,40 @@ export default class Auth {
         }
 
         throw new Error('Not logged in');
+    }
+
+    static async requestEmailVerification(): Promise<void> {
+        const response = await fetchAPI(`/auth/email/verify`, {
+            method: 'POST',
+            auth: true,
+            headers: {
+
+            }
+        });
+
+        if (response.status === 201) {
+            showToast('Email enviado', 'Um email de verificação foi enviado para você', 'info');
+            return;
+        }
+
+        throw new Error('Email not sent');
+    }
+
+    static async verifyEmail(token: string): Promise<boolean> {
+        const response = await fetch(`${API_URL}/auth/email/verify?token=${token}`, {
+            method: 'GET',
+        });
+
+        if (response.ok) {
+            return true;
+        }
+
+        const body = await response.json();
+        const message = body.message || 'Erro desconhecido';
+
+        showToast('Erro ao verificar email', message, 'error');
+
+        return false;
     }
 
     static async logout() {

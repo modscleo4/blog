@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue';
 
 import ContentParagraph from './Content.Paragraph.vue'
-import { htmlToStruct, ParagraphData } from '../../util/paragraph';
+import { htmlToStruct, ParagraphData } from '../../util/paragraph.js';
 
 const props = defineProps<{
     value?: string;

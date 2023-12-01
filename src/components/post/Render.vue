@@ -194,7 +194,7 @@ onBeforeUnmount(() => {
                 <section class="info">
                     <IconUser class="icon" color="black" :size="64" stroke-width="1.25" />
                     <div class="badges">
-                        <Badge :highlight="author.id === user?.id"><router-link :to="`/${author.username}`">{{ author.username }}</router-link></Badge>
+                        <Badge :highlight="author.id === user?.id"><router-link :to="`/@${author.username}`">{{ author.username }}</router-link></Badge>
                         <Badge>{{ author.posts }} posts</Badge>
                     </div>
 
@@ -281,7 +281,7 @@ article > .title {
 
 article > .resume {
     text-align: center;
-    font-size: 1.25em;
+    font-size: 1.325em;
     padding: 0 2rem;
     margin: 0;
 }
@@ -290,6 +290,7 @@ article > .thumbnail {
     width: 100%;
     aspect-ratio: 16 / 9;
     object-fit: cover;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.25);
 }
 
 article > section.info {
@@ -303,6 +304,7 @@ article > section.content {
     padding: 0 2rem;
     width: 100%;
     max-width: 100vw;
+    font-size: 1.125em;
 }
 
 article > .author {

@@ -1,5 +1,5 @@
-import { fetchAPI } from "./API";
-import { useUsersStore } from "../store";
+import { fetchAPI } from "./API.js";
+import { useUsersStore } from "../store.js";
 
 type BackendUser = {
     id: string;

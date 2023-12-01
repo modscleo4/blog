@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router';
 
 import Editor from './Editor.vue';
 import Post from '../../util/Post.js';
-import { showErrorToast, showToast } from '../../util/toast';
+import { showErrorToast, showToast } from '../../util/toast.js';
 
 const props = defineProps<{
     postId?: string;

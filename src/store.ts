@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
-import Post from './util/Post';
-import User from './util/User';
-import { Toast, ToastType } from './util/toast';
+import Post from './util/Post.js';
+import User from './util/User.js';
+import { Toast, ToastType } from './util/toast.js';
 
 export const useAuthStore = defineStore('user', {
     state: () => ({

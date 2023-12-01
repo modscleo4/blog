@@ -112,6 +112,7 @@ const props = defineProps<{
 p {
     margin: 0;
     margin-bottom: 1rem;
+    text-align: justify;
 }
 
 .code {

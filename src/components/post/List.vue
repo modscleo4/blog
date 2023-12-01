@@ -40,12 +40,16 @@ const listMode = ref<string>(props.grid ? 'grid' : 'horizontal');
         </section>
 
         <div class="layout-container" v-if="grid">
-            <button type="button" :disabled="listMode == 'grid'" @click="listMode = 'grid'"><IconLayoutGrid color="black" :size="24" stroke-width="1.25" /></button>
-            <button type="button" :disabled="listMode == 'list'" @click="listMode = 'list'"><IconLayoutList color="black" :size="24" stroke-width="1.25" /></button>
+            <button type="button" :disabled="listMode == 'grid'" @click="listMode = 'grid'">
+                <IconLayoutGrid color="black" :size="24" stroke-width="1.25" />
+            </button>
+            <button type="button" :disabled="listMode == 'list'" @click="listMode = 'list'">
+                <IconLayoutList color="black" :size="24" stroke-width="1.25" />
+            </button>
         </div>
     </header>
 
-    <div v-if="posts && posts.length > 0" class="list-container" :class="{'grid': listMode == 'grid', 'list': listMode == 'list'}">
+    <div v-if="posts && posts.length > 0" class="list-container" :class="{ 'grid': listMode == 'grid', 'list': listMode == 'list' }">
         <CardPost v-for="post in posts" :key="post.id" :post="post" />
     </div>
     <div v-else>

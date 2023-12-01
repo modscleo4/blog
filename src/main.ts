@@ -12,11 +12,13 @@ const Profile       = () => import('./pages/Profile.vue');
 const ViewPost      = () => import('./pages/post/View.vue');
 const CreatePost    = () => import('./pages/post/Create.vue');
 const EditPost      = () => import('./pages/post/Edit.vue');
+const VerifyEmail   = () => import('./pages/VerifyEmail.vue');
 
 const router = createRouter({
     history: createWebHistory(),
     routes: [
         { path: '/oauth/callback', component: OAuthCallback, props: true },
+        { path: '/email/verify', component: VerifyEmail },
 
         { path: '/', component: Home },
         { path: '/login', component: Login },
@@ -24,7 +26,7 @@ const router = createRouter({
         { path: '/posts/:id', component: ViewPost, props: true },
         { path: '/posts/:id/:title', component: ViewPost, props: true },
         { path: '/posts/:id/edit', component: EditPost, props: true },
-        { path: '/:username', component: Profile, props: true },
+        { path: '/@:username', component: Profile, props: true },
     ],
 });
 

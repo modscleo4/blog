@@ -43,7 +43,7 @@ export default class Post {
 
     static async getAll(username?: string): Promise<Post[]> {
         const fields = ['id', 'userId', 'title', 'resume', 'imageUrl', 'createdAt', 'updatedAt', 'user'].join(',');
-        const response = await fetchAPI(`/api/v1/post/?fields=${fields}${username ? `&username=${username}` : ''}`, {
+        const response = await fetchAPI(`/api/v1/post?fields=${fields}${username ? `&username=${username}` : ''}`, {
             method: 'GET',
         });
 
@@ -56,7 +56,7 @@ export default class Post {
     }
 
     static async create({ title, resume, content, imageUrl }: { title: string, resume: string, content: object, imageUrl: string; }): Promise<Post | false> {
-        const response = await fetchAPI(`/api/v1/post/`, {
+        const response = await fetchAPI(`/api/v1/post`, {
             method: 'POST',
             auth: true,
             headers: {

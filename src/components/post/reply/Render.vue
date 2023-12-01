@@ -7,10 +7,10 @@ import ReplyList from './List.vue';
 import PostContent from '../Content.vue';
 import Reply from '../../../util/Reply.js';
 import User from '../../../util/User.js';
-import ReplyVote from '../../../util/ReplyVote';
-import { useAuthStore } from '../../../store';
+import ReplyVote from '../../../util/ReplyVote.js';
+import { useAuthStore } from '../../../store.js';
 import { dateToRelative, formatDate, formatThousands } from '../../../util/formatter.js';
-import { showErrorToast, showToast } from '../../../util/toast';
+import { showErrorToast, showToast } from '../../../util/toast.js';
 
 const props = defineProps<{
     replyId: string;
@@ -130,7 +130,7 @@ async function doVote(kind: 'UPVOTE' | 'DOWNVOTE') {
         </aside>
 
         <header>
-            <Badge :highlight="author.id === user?.id"><router-link :to="`/${author.username}`">{{ author.username }}</router-link></Badge>
+            <Badge :highlight="author.id === user?.id"><router-link :to="`/@${author.username}`">{{ author.username }}</router-link></Badge>
             <Badge v-if="collapsed">{{ formatThousands(votes) }} voto{{ votes !== 1 ? 's' : '' }}</Badge>
             <Badge :title="formatDate(reply.createdAt)">{{ dateToRelative(reply.createdAt) }}</Badge>
             <Badge v-if="reply.updatedAt" :title="formatDate(reply.updatedAt)">atualizado <b>{{ dateToRelative(reply.updatedAt) }}</b></Badge>
