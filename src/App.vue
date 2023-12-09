@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useAuthStore, useToastsStore } from './store';
+import { useAuthStore, useToastsStore } from './store.js';
 import { RouterView } from 'vue-router';
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
@@ -29,7 +29,7 @@ window.addEventListener('unhandledrejection', e => {
 
 <template>
     <Header />
-    <router-view :key="$route.fullPath.split('#')[0]"></router-view>
+    <router-view :key="$route.path"></router-view>
 
     <ul>
         <li v-for="toast in toastsStore.toasts" :key="toast.id" @click="toastsStore.removeToast(toast.id)">

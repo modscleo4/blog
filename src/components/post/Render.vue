@@ -117,12 +117,13 @@ function addReply(reply: Reply) {
 
 function onScroll(e: Event) {
     const boundingRect = document.querySelector('article')?.getBoundingClientRect();
+    const authorBoundingRect = document.querySelector('.author')?.getBoundingClientRect();
     const repliesBoundingRect = document.querySelector('#replies')?.getBoundingClientRect();
-    if (!boundingRect || !repliesBoundingRect) {
+    if (!boundingRect || !authorBoundingRect || !repliesBoundingRect) {
         return;
     }
 
-    const percent = -boundingRect.y / (boundingRect.height - repliesBoundingRect.height);
+    const percent = -boundingRect.y / (boundingRect.height - authorBoundingRect.height - repliesBoundingRect.height);
 
     document.querySelector<HTMLDivElement>('div.container')?.style?.setProperty('--percent', `${clamp(percent * 100, 0, 100)}%`);
 }
@@ -281,7 +282,7 @@ article > .title {
 
 article > .resume {
     text-align: center;
-    font-size: 1.325em;
+    font-size: 1.25em;
     padding: 0 2rem;
     margin: 0;
 }
@@ -304,7 +305,6 @@ article > section.content {
     padding: 0 2rem;
     width: 100%;
     max-width: 100vw;
-    font-size: 1.125em;
 }
 
 article > .author {
