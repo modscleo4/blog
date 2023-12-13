@@ -40,10 +40,10 @@ const listMode = ref<string>(props.grid ? 'grid' : 'horizontal');
         </section>
 
         <div class="layout-container" v-if="grid">
-            <button type="button" :disabled="listMode == 'grid'" @click="listMode = 'grid'">
+            <button type="button" :disabled="listMode == 'grid'" @click="listMode = 'grid'" title="Grade">
                 <IconLayoutGrid color="black" :size="24" stroke-width="1.25" />
             </button>
-            <button type="button" :disabled="listMode == 'list'" @click="listMode = 'list'">
+            <button type="button" :disabled="listMode == 'list'" @click="listMode = 'list'" title="Lista">
                 <IconLayoutList color="black" :size="24" stroke-width="1.25" />
             </button>
         </div>

@@ -13,6 +13,7 @@ const ViewPost      = () => import('./pages/post/View.vue');
 const CreatePost    = () => import('./pages/post/Create.vue');
 const EditPost      = () => import('./pages/post/Edit.vue');
 const VerifyEmail   = () => import('./pages/VerifyEmail.vue');
+const NotFound      = () => import('./pages/NotFound.vue');
 
 const router = createRouter({
     history: createWebHistory(),
@@ -27,6 +28,8 @@ const router = createRouter({
         { path: '/posts/:id/:title', component: ViewPost, props: true },
         { path: '/posts/:id/edit', component: EditPost, props: true },
         { path: '/@:username', component: Profile, props: true },
+
+        { path: '/:pathMatch(.*)*', component: NotFound, props: true },
     ],
 });
 

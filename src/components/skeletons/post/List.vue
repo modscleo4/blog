@@ -45,6 +45,7 @@ header {
     display: flex;
     flex-direction: column;
     padding: 1rem;
+    gap: 1rem;
 }
 
 header h1 {
@@ -53,6 +54,14 @@ header h1 {
 
 header .layout-container {
     align-self: end;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
+header .layout-container span {
+    width: 2rem;
+    height: 2rem;
 }
 
 header .info {
