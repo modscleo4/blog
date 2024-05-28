@@ -31,7 +31,7 @@ window.addEventListener('unhandledrejection', e => {
     <Header />
     <router-view :key="$route.path"></router-view>
 
-    <ul>
+    <ul role="alerts">
         <li v-for="toast in toastsStore.toasts" :key="toast.id" @click="toastsStore.removeToast(toast.id)">
             <Toast :toast="toast" />
         </li>
@@ -50,6 +50,8 @@ ul {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    /* align-items: end; */
+    max-width: 20rem;
 }
 
 ul li {
@@ -62,6 +64,7 @@ ul li {
 *::before,
 *::after {
     box-sizing: border-box;
+    min-width: 0;
 }
 
 .ce-block__content,
@@ -71,7 +74,7 @@ ul li {
 
 html,
 body {
-    font-family: 'Lato', sans-serif;
+    font-family: 'Nunito', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: #2c3e50;
@@ -123,8 +126,8 @@ h6 {
 }
 
 #app {
-    display: grid;
-    grid-template-rows: min-content auto;
+    display: flex;
+    flex-direction: column;
     min-height: 100vh;
 }
 </style>

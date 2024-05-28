@@ -91,7 +91,7 @@ form {
     padding: 1rem 0;
     max-width: 1200px;
     gap: 0.75rem;
-    justify-self: center;
+    align-self: center;
     width: 100%;
 }
 

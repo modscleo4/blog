@@ -10,7 +10,7 @@ const props = defineProps<{
     <section>
         <h1>404</h1>
 
-        <p>Não foi possível encontrar a página <code>/{{ props.pathMatch?.join('/') }}</code>.</p>
+        <p>Não foi possível encontrar a página <code>/{{ pathMatch?.join('/') }}</code>.</p>
     </section>
 </template>
 

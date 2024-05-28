@@ -240,6 +240,12 @@ onBeforeUnmount(() => {
     z-index: 9999;
 }
 
+@-moz-document url-prefix() {
+    .container::before {
+        margin-top: -1rem;
+    }
+}
+
 aside {
     justify-self: right;
 }
@@ -271,6 +277,7 @@ article {
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+    line-height: 1.5;
 }
 
 article > .title {
@@ -305,6 +312,7 @@ article > section.content {
     padding: 0 2rem;
     width: 100%;
     max-width: 100vw;
+    font-size: 1.0625rem;
 }
 
 article > .author {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { IconAlertTriangle, IconAlertOctagon, IconCheck, IconInfoCircle } from '@tabler/icons-vue';
 
 import { Toast } from '../util/toast.js';
 
@@ -10,6 +11,11 @@ const props = defineProps<{
 
 <template>
     <div :class="toast.type" :style="`--time: ${toast.timeout}ms`">
+        <IconAlertTriangle v-if="toast.type === 'warning'" :size="32" stroke-width="1.25" />
+        <IconAlertOctagon v-else-if="toast.type === 'error'" :size="32" stroke-width="1.25" />
+        <IconCheck v-else-if="toast.type === 'success'" :size="32" stroke-width="1.25" />
+        <IconInfoCircle v-else-if="toast.type === 'info'" :size="32" stroke-width="1.25" />
+
         <h1>{{ toast.title }}</h1>
         <p>{{ toast.message }}</p>
     </div>
@@ -20,9 +26,11 @@ div {
     padding: 0.5rem;
     border-radius: 0.25rem;
     box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.25);
-    display: flex;
     position: relative;
-    flex-direction: column;
+    display: grid;
+    grid-template-areas: 'icon title' 'icon message';
+    grid-template-columns: min-content auto;
+    grid-template-rows: min-content min-content;
     gap: 0.25rem;
     overflow: hidden;
     animation: fade var(--time, 0s) linear;
@@ -97,12 +105,21 @@ div:hover {
     box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.5);
 }
 
+svg {
+    grid-area: icon;
+    margin: 0.25rem;
+}
+
 h1 {
+    grid-area: title;
+    align-self: center;
     font-size: 1rem;
     margin: 0;
 }
 
 p {
+    grid-area: message;
+    align-self: center;
     font-size: 0.75rem;
     margin: 0;
 }
