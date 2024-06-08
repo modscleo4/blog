@@ -43,7 +43,7 @@ export default class Post {
 
     static async getAll(username?: string): Promise<Post[]> {
         const fields = ['id', 'userId', 'title', 'resume', 'imageUrl', 'createdAt', 'updatedAt', 'user'].join(',');
-        const response = await fetchAPI(`/api/v1/post?fields=${fields}${username ? `&username=${username}` : ''}`, {
+        const response = await fetchAPI(`/v1/post?fields=${fields}${username ? `&username=${username}` : ''}`, {
             method: 'GET',
         });
 
@@ -56,7 +56,7 @@ export default class Post {
     }
 
     static async create({ title, resume, content, imageUrl }: { title: string, resume: string, content: object, imageUrl: string; }): Promise<Post | false> {
-        const response = await fetchAPI(`/api/v1/post`, {
+        const response = await fetchAPI(`/v1/post`, {
             method: 'POST',
             auth: true,
             headers: {
@@ -83,7 +83,7 @@ export default class Post {
     }
 
     static async get(id: string): Promise<Post> {
-        const response = await fetchAPI(`/api/v1/post/${id}`, {
+        const response = await fetchAPI(`/v1/post/${id}`, {
             method: 'GET',
         });
 
@@ -96,7 +96,7 @@ export default class Post {
     }
 
     static async update(id: string, { title, resume, content, imageUrl }: { title: string, resume: string, content: object, imageUrl: string; }): Promise<Post | false> {
-        const response = await fetchAPI(`/api/v1/post/${id}`, {
+        const response = await fetchAPI(`/v1/post/${id}`, {
             method: 'PUT',
             auth: true,
             headers: {
@@ -123,7 +123,7 @@ export default class Post {
     }
 
     static async delete(id: string): Promise<boolean> {
-        const response = await fetchAPI(`/api/v1/post/${id}`, {
+        const response = await fetchAPI(`/v1/post/${id}`, {
             method: 'DELETE',
             auth: true,
             headers: {

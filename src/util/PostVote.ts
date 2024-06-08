@@ -35,7 +35,7 @@ export default class PostVote {
             return null;
         }
 
-        const response = await fetchAPI(`/api/v1/post/${postId}/vote`, {
+        const response = await fetchAPI(`/v1/post/${postId}/vote`, {
             method: 'GET',
             auth: true,
             headers: {
@@ -54,7 +54,7 @@ export default class PostVote {
     }
 
     static async update(postId: string, { kind }: { kind: 'UPVOTE' | 'DOWNVOTE'; }): Promise<PostVote | false> {
-        const response = await fetchAPI(`/api/v1/post/${postId}/vote`, {
+        const response = await fetchAPI(`/v1/post/${postId}/vote`, {
             method: 'PUT',
             auth: true,
             headers: {
@@ -76,7 +76,7 @@ export default class PostVote {
     }
 
     static async delete(postId: string): Promise<boolean> {
-        const response = await fetchAPI(`/api/v1/post/${postId}/vote`, {
+        const response = await fetchAPI(`/v1/post/${postId}/vote`, {
             method: 'DELETE',
             auth: true,
             headers: {

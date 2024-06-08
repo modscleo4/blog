@@ -34,7 +34,7 @@ export default class User {
             return usersStore.users.find(user => user.id === id)!;
         }
 
-        const response = await fetchAPI(`/api/v1/user/${id}`, {
+        const response = await fetchAPI(`/v1/user/${id}`, {
             method: 'GET',
         });
 
@@ -55,7 +55,7 @@ export default class User {
             return usersStore.users.find(user => user.username === username)!;
         }
 
-        const response = await fetchAPI(`/api/v1/user/@${username}`, {
+        const response = await fetchAPI(`/v1/user/@${username}`, {
             method: 'GET',
         });
 

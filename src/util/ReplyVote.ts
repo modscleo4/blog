@@ -35,7 +35,7 @@ export default class ReplyVote {
             return null;
         }
 
-        const response = await fetchAPI(`/api/v1/reply/${replyId}/vote`, {
+        const response = await fetchAPI(`/v1/reply/${replyId}/vote`, {
             method: 'GET',
             auth: true,
             headers: {
@@ -54,7 +54,7 @@ export default class ReplyVote {
     }
 
     static async update(replyId: string, { kind }: { kind: 'UPVOTE' | 'DOWNVOTE'; }): Promise<ReplyVote| false> {
-        const response = await fetchAPI(`/api/v1/reply/${replyId}/vote`, {
+        const response = await fetchAPI(`/v1/reply/${replyId}/vote`, {
             method: 'PUT',
             auth: true,
             headers: {
@@ -76,7 +76,7 @@ export default class ReplyVote {
     }
 
     static async delete(replyId: string): Promise<boolean> {
-        const response = await fetchAPI(`/api/v1/reply/${replyId}/vote`, {
+        const response = await fetchAPI(`/v1/reply/${replyId}/vote`, {
             method: 'DELETE',
             auth: true,
             headers: {

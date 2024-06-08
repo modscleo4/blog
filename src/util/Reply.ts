@@ -39,7 +39,7 @@ export default class Reply {
     }
 
     static async getAll(postId: string): Promise<Reply[]> {
-        const response = await fetchAPI(`/api/v1/post/${postId}/reply`, {
+        const response = await fetchAPI(`/v1/post/${postId}/reply`, {
             method: 'GET',
         });
 
@@ -52,7 +52,7 @@ export default class Reply {
     }
 
     static async create({ postId, replyId, content }: { postId: string, replyId?: string, content: object; }): Promise<Reply | false> {
-        const response = await fetchAPI(`/api/v1/${replyId ? 'reply' : 'post'}/${replyId ?? postId}/reply`, {
+        const response = await fetchAPI(`/v1/${replyId ? 'reply' : 'post'}/${replyId ?? postId}/reply`, {
             method: 'POST',
             auth: true,
             headers: {
@@ -74,7 +74,7 @@ export default class Reply {
     }
 
     static async get(id: string): Promise<Reply> {
-        const response = await fetchAPI(`/api/v1/reply/${id}`);
+        const response = await fetchAPI(`/v1/reply/${id}`);
 
         if (response.status === 200) {
             const reply: BackendReply = await response.json();
@@ -85,7 +85,7 @@ export default class Reply {
     }
 
     static async update(id: string, { content }: { content: object; }): Promise<Reply | false> {
-        const response = await fetchAPI(`/api/v1/post/${id}`, {
+        const response = await fetchAPI(`/v1/post/${id}`, {
             method: 'PUT',
             auth: true,
             headers: {
@@ -107,7 +107,7 @@ export default class Reply {
     }
 
     static async delete(id: string): Promise<boolean> {
-        const response = await fetchAPI(`/api/v1/reply/${id}`, {
+        const response = await fetchAPI(`/v1/reply/${id}`, {
             method: 'DELETE',
             auth: true,
             headers: {
